@@ -65,27 +65,226 @@
 	</template>
 	<template>
 		<name>Interface</name>
-		<location id="id6" x="-195" y="-144">
+		<location id="id6" x="-391" y="-348">
+			<name x="-401" y="-382">GearN</name>
+		</location>
+		<location id="id7" x="-510" y="-221">
+			<name x="-578" y="-255">chkGearRN</name>
+		</location>
+		<location id="id8" x="-331" y="-212">
+			<name x="-323" y="-204">chkGearNR</name>
+		</location>
+		<location id="id9" x="-425" y="-119">
+			<name x="-442" y="-102">GearR</name>
+		</location>
+		<location id="id10" x="-178" y="-425">
+			<name x="-188" y="-459">chkGearN1</name>
+		</location>
+		<location id="id11" x="-178" y="-323">
+			<name x="-212" y="-306">chkGear1N</name>
+		</location>
+		<location id="id12" x="17" y="-374">
+			<name x="7" y="-408">Gear1</name>
+		</location>
+		<location id="id13" x="-51" y="-238">
+			<name x="-136" y="-246">chkGear21</name>
+		</location>
+		<location id="id14" x="101" y="-229">
+			<name x="119" y="-238">chkGear12</name>
+		</location>
+		<location id="id15" x="25" y="-136">
+			<name x="42" y="-153">Gear2</name>
+		</location>
+		<location id="id16" x="-50" y="-34">
+			<name x="-135" y="-42">chkGear32</name>
+		</location>
+		<location id="id17" x="102" y="-34">
+			<name x="120" y="-42">chkGear23</name>
+		</location>
+		<location id="id18" x="43" y="85">
+			<name x="60" y="68">Gear3</name>
+		</location>
+		<location id="id19" x="-34" y="179">
+			<name x="-119" y="171">chkGear43</name>
+		</location>
+		<location id="id20" x="119" y="179">
+			<name x="136" y="171">chkGear34</name>
+		</location>
+		<location id="id21" x="42" y="264">
+			<name x="59" y="255">Gear4</name>
+		</location>
+		<location id="id22" x="-34" y="374">
+			<name x="-119" y="366">chkGear54</name>
+		</location>
+		<location id="id23" x="127" y="374">
+			<name x="144" y="366">chkGear45</name>
+		</location>
+		<location id="id24" x="51" y="476">
+			<name x="68" y="468">Gear5</name>
 		</location>
 		<init ref="id6"/>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="-68" y="306">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-85" y="425">ReqNewGear!</label>
+			<label kind="assignment" x="-85" y="443">FromGear:=5
+ToGear:=4</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id24"/>
+			<label kind="synchronisation" x="93" y="425">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="102" y="281">ReqNewGear!</label>
+			<label kind="assignment" x="102" y="298">FromGear:=4
+ToGear:=5</label>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-67" y="111">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id19"/>
+			<label kind="synchronisation" x="-93" y="213">ReqNewGear!</label>
+			<label kind="assignment" x="-93" y="230">FromGear:=4
+ToGear:=3</label>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id21"/>
+			<label kind="synchronisation" x="93" y="213">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id20"/>
+			<label kind="synchronisation" x="94" y="94">ReqNewGear!</label>
+			<label kind="assignment" x="94" y="111">FromGear:=3
+ToGear:=4</label>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-93" y="-102">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-109" y="9">ReqNewGear!</label>
+			<label kind="assignment" x="-109" y="26">FromGear:=3
+ToGear:=2</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="86" y="26">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="85" y="-127">ReqNewGear!</label>
+			<label kind="assignment" x="85" y="-110">FromGear:=2
+ToGear:=3</label>
+		</transition>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-119" y="-195">ReqNewGear!</label>
+			<label kind="assignment" x="-119" y="-178">FromGear:=2
+ToGear:=1</label>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="76" y="-195">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="76" y="-340">ReqNewGear!</label>
+			<label kind="assignment" x="76" y="-323">FromGear:=1
+ToGear:=2</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-93" y="-306">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-289" y="-357">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-136" y="-374">ReqNewGear!</label>
+			<label kind="assignment" x="-136" y="-357">FromGear:=1
+ToGear:=0</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-102" y="-425">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-323" y="-459">ReqNewGear!</label>
+			<label kind="assignment" x="-323" y="-442">FromGear:=0
+ToGear:=1</label>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-552" y="-170">ReqNewGear!</label>
+			<label kind="assignment" x="-552" y="-153">FromGear:=6
+ToGear:=0</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-365" y="-170">NewGear?</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-357" y="-314">ReqNewGear!</label>
+			<label kind="assignment" x="-357" y="-297">FromGear:=0
+ToGear:=6</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-510" y="-314">NewGear?</label>
+		</transition>
 	</template>
 	<template>
 		<name>GearBox</name>
-		<location id="id7" x="0" y="0">
+		<location id="id25" x="0" y="0">
 		</location>
-		<init ref="id7"/>
+		<init ref="id25"/>
 	</template>
 	<template>
 		<name>Engine</name>
-		<location id="id8" x="0" y="0">
+		<location id="id26" x="0" y="0">
 		</location>
-		<init ref="id8"/>
+		<init ref="id26"/>
 	</template>
 	<template>
 		<name>GearControl</name>
-		<location id="id9" x="-187" y="-93">
+		<location id="id27" x="-187" y="-93">
 		</location>
-		<init ref="id9"/>
+		<init ref="id27"/>
 	</template>
 	<system>// Place template instantiations here.
 Process = Template();
