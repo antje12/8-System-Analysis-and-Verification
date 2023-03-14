@@ -65,7 +65,7 @@
 	</template>
 	<template>
 		<name>Interface</name>
-		<location id="id6" x="0" y="0">
+		<location id="id6" x="-195" y="-144">
 		</location>
 		<init ref="id6"/>
 	</template>
