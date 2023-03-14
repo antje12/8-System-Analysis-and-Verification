@@ -9,15 +9,15 @@
 			<name x="185" y="85">Closing</name>
 			<label kind="invariant" x="185" y="136">(CTimer&lt;=150)</label>
 		</location>
-		<location id="id1" x="59" y="60">
-			<name x="49" y="26">ErrorClose</name>
+		<location id="id1" x="85" y="-16">
+			<name x="75" y="-50">ErrorClose</name>
 		</location>
 		<location id="id2" x="-204" y="-127">
 			<name x="-214" y="-161">Opening</name>
 			<label kind="invariant" x="-264" y="-178">(CTimer&lt;=150)</label>
 		</location>
-		<location id="id3" x="-128" y="-16">
-			<name x="-138" y="-50">ErrorOpen</name>
+		<location id="id3" x="-119" y="17">
+			<name x="-129" y="-17">ErrorOpen</name>
 		</location>
 		<location id="id4" x="-204" y="119">
 			<name x="-214" y="85">Closed</name>
@@ -29,14 +29,14 @@
 		<transition>
 			<source ref="id0"/>
 			<target ref="id1"/>
-			<label kind="guard" x="85" y="9">CTimer==150</label>
-			<label kind="assignment" x="84" y="43">ErrStat:=1</label>
+			<label kind="guard" x="25" y="17">CTimer==150</label>
+			<label kind="assignment" x="24" y="51">ErrStat:=1</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-86" y="-68">CTimer==150</label>
-			<label kind="assignment" x="-85" y="-33">ErrStat:=2</label>
+			<label kind="guard" x="-153" y="-102">CTimer==150</label>
+			<label kind="assignment" x="-152" y="-67">ErrStat:=2</label>
 		</transition>
 		<transition>
 			<source ref="id0"/>
