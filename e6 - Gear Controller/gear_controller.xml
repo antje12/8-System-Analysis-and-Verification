@@ -11,67 +11,72 @@ int [0,4] ErrStat;
 int [0,6] FromGear;
 int [0,6] ToGear;
 
-int [0,2] UseCase;</declaration>
+int [0,2] UseCase;
+
+clock SysTimer;
+clock CTimer;
+clock GBTimer;
+clock ETimer;
+clock GCTimer;</declaration>
 	<template>
 		<name x="5" y="5">Clutch</name>
-		<declaration>// Place local declarations here.
-clock CTimer;</declaration>
-		<location id="id0" x="-51" y="-128">
-			<name x="-61" y="-162">Closing</name>
-			<label kind="invariant" x="-61" y="-111">(CTimer&lt;=150)</label>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="25" y="-187">
+			<name x="15" y="-221">Closing</name>
+			<label kind="invariant" x="15" y="-170">(CTimer&lt;=150)</label>
 		</location>
-		<location id="id1" x="-161" y="-263">
-			<name x="-171" y="-297">ErrorClose</name>
+		<location id="id1" x="-85" y="-322">
+			<name x="-95" y="-356">ErrorClose</name>
 		</location>
-		<location id="id2" x="-450" y="-374">
-			<name x="-460" y="-408">Opening</name>
-			<label kind="invariant" x="-509" y="-425">(CTimer&lt;=150)</label>
+		<location id="id2" x="-374" y="-433">
+			<name x="-384" y="-467">Opening</name>
+			<label kind="invariant" x="-433" y="-484">(CTimer&lt;=150)</label>
 		</location>
-		<location id="id3" x="-365" y="-230">
-			<name x="-375" y="-264">ErrorOpen</name>
+		<location id="id3" x="-289" y="-289">
+			<name x="-299" y="-323">ErrorOpen</name>
 		</location>
-		<location id="id4" x="-450" y="-128">
-			<name x="-460" y="-162">Closed</name>
+		<location id="id4" x="-374" y="-187">
+			<name x="-384" y="-221">Closed</name>
 		</location>
-		<location id="id5" x="-51" y="-374">
-			<name x="-61" y="-408">Open</name>
+		<location id="id5" x="25" y="-433">
+			<name x="15" y="-467">Open</name>
 		</location>
 		<init ref="id4"/>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id1"/>
-			<label kind="guard" x="-221" y="-230">CTimer==150</label>
-			<label kind="assignment" x="-222" y="-196">ErrStat:=1</label>
+			<label kind="guard" x="-145" y="-289">CTimer==150</label>
+			<label kind="assignment" x="-146" y="-255">ErrStat:=1</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-399" y="-349">CTimer==150</label>
-			<label kind="assignment" x="-398" y="-314">ErrStat:=2</label>
+			<label kind="guard" x="-323" y="-408">CTimer==150</label>
+			<label kind="assignment" x="-322" y="-373">ErrStat:=2</label>
 		</transition>
 		<transition>
 			<source ref="id0"/>
 			<target ref="id4"/>
-			<label kind="guard" x="-289" y="-128">CTimer&gt;=100</label>
-			<label kind="synchronisation" x="-289" y="-111">ClutchIsClosed!</label>
+			<label kind="guard" x="-213" y="-187">CTimer&gt;=100</label>
+			<label kind="synchronisation" x="-213" y="-170">ClutchIsClosed!</label>
 		</transition>
 		<transition>
 			<source ref="id5"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="-42" y="-272">CloseClutch?</label>
-			<label kind="assignment" x="-43" y="-255">CTimer:=0</label>
+			<label kind="synchronisation" x="34" y="-331">CloseClutch?</label>
+			<label kind="assignment" x="33" y="-314">CTimer:=0</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id5"/>
-			<label kind="guard" x="-340" y="-425">CTimer&gt;=100</label>
-			<label kind="synchronisation" x="-339" y="-408">ClutchIsOpen!</label>
+			<label kind="guard" x="-264" y="-484">CTimer&gt;=100</label>
+			<label kind="synchronisation" x="-263" y="-467">ClutchIsOpen!</label>
 		</transition>
 		<transition>
 			<source ref="id4"/>
 			<target ref="id2"/>
-			<label kind="synchronisation" x="-552" y="-246">OpenClutch?</label>
-			<label kind="assignment" x="-552" y="-229">CTimer:=0</label>
+			<label kind="synchronisation" x="-476" y="-305">OpenClutch?</label>
+			<label kind="assignment" x="-476" y="-288">CTimer:=0</label>
 		</transition>
 	</template>
 	<template>
@@ -281,7 +286,6 @@ ToGear:=6</label>
 	</template>
 	<template>
 		<name>GearBox</name>
-		<declaration>clock GBTimer;</declaration>
 		<location id="id25" x="-467" y="-161">
 			<name x="-535" y="-170">Neutral</name>
 		</location>
@@ -343,7 +347,6 @@ ToGear:=6</label>
 	</template>
 	<template>
 		<name>Engine</name>
-		<declaration>clock ETimer;</declaration>
 		<location id="id31" x="34" y="0">
 			<name x="24" y="-34">Initial</name>
 		</location>
@@ -359,7 +362,7 @@ ToGear:=6</label>
 			<label kind="invariant" x="-518" y="152">(ETimer&lt;=500)</label>
 		</location>
 		<location id="id35" x="-263" y="255">
-			<name x="-238" y="263">ErrSpeed</name>
+			<name x="-238" y="263">ErrorSpeed</name>
 		</location>
 		<location id="id36" x="-110" y="-76">
 			<name x="-178" y="-110">ClutchOpen</name>
@@ -464,8 +467,6 @@ UseCase:=0</label>
 	</template>
 	<template>
 		<name>GearControl</name>
-		<declaration>clock GCTimer;
-clock SysTimer;</declaration>
 		<location id="id40" x="-697" y="-561">
 			<name x="-707" y="-595">Gear</name>
 		</location>
@@ -477,9 +478,9 @@ clock SysTimer;</declaration>
 			<name x="-680" y="-349">CheckTorque</name>
 			<label kind="invariant" x="-689" y="-323">(GCTimer&lt;=255)</label>
 		</location>
-		<location id="id43" x="-382" y="-324">
-			<name x="-391" y="-375">CheckClutch2</name>
-			<label kind="invariant" x="-390" y="-358">(GCTimer&lt;=200)</label>
+		<location id="id43" x="-391" y="-323">
+			<name x="-400" y="-374">CheckClutch2</name>
+			<label kind="invariant" x="-399" y="-357">(GCTimer&lt;=200)</label>
 		</location>
 		<location id="id44" x="-697" y="-187">
 			<name x="-688" y="-221">ReqNeuGear</name>
@@ -523,19 +524,19 @@ clock SysTimer;</declaration>
 			<name x="-212" y="118">ClutchOpen</name>
 			<committed/>
 		</location>
-		<location id="id55" x="-221" y="288">
-			<name x="-187" y="288">CheckGearSet2</name>
-			<label kind="invariant" x="-187" y="305">(GCTimer&lt;=350)</label>
+		<location id="id55" x="-221" y="297">
+			<name x="-187" y="297">CheckGearSet2</name>
+			<label kind="invariant" x="-187" y="314">(GCTimer&lt;=350)</label>
 		</location>
-		<location id="id56" x="-697" y="314">
-			<name x="-688" y="296">CheckGearSet1</name>
-			<label kind="invariant" x="-688" y="313">(GCTimer&lt;=350)</label>
+		<location id="id56" x="-697" y="297">
+			<name x="-688" y="279">CheckGearSet1</name>
+			<label kind="invariant" x="-688" y="296">(GCTimer&lt;=350)</label>
 		</location>
-		<location id="id57" x="-416" y="288">
-			<name x="-426" y="254">GSetError</name>
+		<location id="id57" x="-416" y="297">
+			<name x="-426" y="263">GSetError</name>
 		</location>
-		<location id="id58" x="-705" y="399">
-			<name x="-697" y="408">ReqTorqueC</name>
+		<location id="id58" x="-697" y="399">
+			<name x="-689" y="408">ReqTorqueC</name>
 			<committed/>
 		</location>
 		<location id="id59" x="-442" y="399">
@@ -553,8 +554,8 @@ clock SysTimer;</declaration>
 			<name x="-214" y="561">CheckClutchClosed2</name>
 			<label kind="invariant" x="-212" y="577">(GCTimer&lt;=200)</label>
 		</location>
-		<location id="id63" x="-705" y="552">
-			<name x="-715" y="518">GearChanged</name>
+		<location id="id63" x="-697" y="552">
+			<name x="-707" y="518">GearChanged</name>
 			<committed/>
 		</location>
 		<location id="id64" x="-697" y="220">
@@ -784,7 +785,236 @@ system
     Clutch, Interface, GearBox,  Engine, GearControl;</system>
 	<queries>
 		<query>
-			<formula></formula>
+			<formula>E&lt;&gt; GearControl.GearChanged</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Interface.Gear5
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Interface.GearR
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( GearControl.GearChanged and ( SysTimer&lt;=1000 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] not ( GearBox.Neutral and ( Interface.Gear1 or Interface.Gear2 or Interface.Gear3 or Interface.Gear4 or Interface.Gear5 or Interface.GearR ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] not ( GearBox.Idle and Interface.GearN )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( Interface.GearN imply GearBox.Neutral )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==0 and SysTimer&gt;=900 ) imply ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==0 and SysTimer&gt;899 and SysTimer&lt;900 and not ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==0 and ( SysTimer&lt;150 ) ) imply not ( GearControl.GearChanged ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==0 and GearControl.GearChanged and ( SysTimer==150 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==0 and FromGear&gt;0 and ToGear&gt;0 and ( SysTimer&lt;400 ) ) imply not ( GearControl.GearChanged ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==0 and FromGear&gt;0 and ToGear&gt;0 and GearControl.GearChanged and ( SysTimer==400 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==1 and SysTimer&gt;1055 ) imply ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==1 and SysTimer==1055 and not ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==1 and SysTimer&lt;550 ) imply not ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==1 and GearControl.GearChanged and ( SysTimer==550 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==1 and FromGear&gt;0 and ToGear&gt;0 and SysTimer&lt;700 ) imply not ( GearControl.GearChanged and GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==1 and FromGear&gt;0 and ToGear&gt;0 and GearControl.GearChanged and ( SysTimer==700 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==2 and SysTimer&gt;=1205 ) imply ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==2 and SysTimer&gt;1204 and SysTimer&lt;1205 and not ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( UseCase==2 and ( SysTimer&lt;450 ) ) imply not ( GearControl.GearChanged or GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( UseCase==2 and GearControl.GearChanged and ( SysTimer==450 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( ErrStat==0 and UseCase==2 and FromGear&gt;0 and ToGear&gt;0 and SysTimer&lt;750 ) imply not ( GearControl.GearChanged and GearControl.Gear ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; ( ErrStat==0 and UseCase==2 and FromGear&gt;0 and ToGear&gt;0 and GearControl.GearChanged and ( SysTimer==750 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( Clutch.ErrorClose and ( GCTimer&gt;200 ) ) imply GearControl.CCloseError )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( GearControl.CCloseError imply Clutch.ErrorClose )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( Clutch.ErrorOpen and ( GCTimer&gt;200 ) ) imply GearControl.COpenError )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.COpenError ) imply Clutch.ErrorOpen )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearBox.ErrorIdle and ( GCTimer&gt;350 ) ) imply GearControl.GSetError )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.GSetError ) imply GearBox.ErrorIdle )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearBox.ErrorNeu and ( GCTimer&gt;300 ) ) imply GearControl.GNeuError )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.GNeuError ) imply GearBox.ErrorNeu )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] not ( ErrStat==0 and Engine.ErrorSpeed )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( Interface.GearN imply ( ( ToGear==0 and Engine.Zero ) or Engine.Initial ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.GearR ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.Gear1 ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.Gear2 ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.Gear3 ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.Gear4 ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( ( GearControl.Gear and Interface.Gear5 ) imply Engine.Torque )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( Clutch.Open imply ( GearControl.ClutchOpen or GearControl.ClutchOpen2 or GearControl.CheckGearSet2 or GearControl.ReqSetGear2 or GearControl.GNeuError or GearControl.ClutchClose or GearControl.CheckClutchClosed or GearControl.CheckClutchClosed2 or GearControl.CCloseError or GearControl.GSetError or GearControl.CheckGearNeu2 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( Clutch.Closed imply ( GearControl.ReqTorqueC or GearControl.GearChanged or GearControl.Gear or GearControl.Initiate or GearControl.CheckTorque or GearControl.ReqNeuGear or GearControl.CheckGearNeu or GearControl.GNeuError or GearControl.ReqSyncSpeed or GearControl.CheckSyncSpeed or GearControl.ReqSetGear or GearControl.CheckGearSet1 or GearControl.GSetError ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( GearBox.Idle imply ( GearControl.ClutchClose or GearControl.CheckClutchClosed or GearControl.CCloseError or GearControl.ReqTorqueC or GearControl.GearChanged or GearControl.Gear or GearControl.Initiate or GearControl.CheckTorque or GearControl.ReqNeuGear or GearControl.CheckClutch2 or GearControl.COpenError or GearControl.ClutchOpen2 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( GearBox.Neutral imply ( GearControl.ReqSetGear or GearControl.CheckClutchClosed2 or GearControl.CCloseError or GearControl.ReqTorqueC or GearControl.GearChanged or GearControl.Gear or GearControl.Initiate or GearControl.ReqSyncSpeed or GearControl.CheckSyncSpeed or GearControl.ReqSetGear or GearControl.CheckClutch or GearControl.COpenError or GearControl.ClutchOpen or GearControl.ReqSetGear2 ) )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( Engine.Torque imply Clutch.Closed )
+</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] ( 1 &gt; 0 )</formula>
 			<comment></comment>
 		</query>
 	</queries>
