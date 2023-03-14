@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.</declaration>
+	<template>
+		<name x="5" y="5">Clutch</name>
+		<declaration>// Place local declarations here.</declaration>
+		<location id="id0" x="195" y="119">
+			<name x="185" y="85">Closing</name>
+			<label kind="invariant" x="185" y="136">(CTimer&lt;=150)</label>
+		</location>
+		<location id="id1" x="59" y="60">
+			<name x="49" y="26">ErrorClose</name>
+		</location>
+		<location id="id2" x="-204" y="-127">
+			<name x="-214" y="-161">Opening</name>
+			<label kind="invariant" x="-264" y="-178">(CTimer&lt;=150)</label>
+		</location>
+		<location id="id3" x="-128" y="-16">
+			<name x="-138" y="-50">ErrorOpen</name>
+		</location>
+		<location id="id4" x="-204" y="119">
+			<name x="-214" y="85">Closed</name>
+		</location>
+		<location id="id5" x="195" y="-127">
+			<name x="185" y="-161">Open</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="guard" x="85" y="9">CTimer==150</label>
+			<label kind="assignment" x="84" y="43">ErrStat:=1</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-86" y="-68">CTimer==150</label>
+			<label kind="assignment" x="-85" y="-33">ErrStat:=2</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id4"/>
+			<label kind="guard" x="-43" y="119">CTimer&gt;=100</label>
+			<label kind="synchronisation" x="-43" y="136">ClutchIsClosed!</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="203" y="-25">CloseClutch?</label>
+			<label kind="assignment" x="203" y="-8">CTimer:=0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-94" y="-178">CTimer&gt;=100</label>
+			<label kind="synchronisation" x="-94" y="-161">ClutchIsOpen!</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-306" y="1">OpenClutch?</label>
+			<label kind="assignment" x="-306" y="18">CTimer:=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Interface</name>
+		<location id="id6" x="0" y="0">
+		</location>
+		<init ref="id6"/>
+	</template>
+	<template>
+		<name>GearBox</name>
+		<location id="id7" x="0" y="0">
+		</location>
+		<init ref="id7"/>
+	</template>
+	<template>
+		<name>Engine</name>
+		<location id="id8" x="0" y="0">
+		</location>
+		<init ref="id8"/>
+	</template>
+	<template>
+		<name>GearControl</name>
+		<location id="id9" x="-187" y="-93">
+		</location>
+		<init ref="id9"/>
+	</template>
+	<system>// Place template instantiations here.
+Process = Template();
+// List one or more processes to be composed into a system.
+system Process;
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
