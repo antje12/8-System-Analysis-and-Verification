@@ -137,12 +137,14 @@ int [0,5] message_shown;
 		</location>
 		<location id="id11" x="-450" y="34">
 			<name x="-509" y="0">In_Stock</name>
+			<committed/>
 		</location>
 		<location id="id12" x="-442" y="-229">
 			<name x="-452" y="-263">Paying</name>
 		</location>
 		<location id="id13" x="59" y="-119">
 			<name x="49" y="-153">Not_In_Stock</name>
+			<committed/>
 		</location>
 		<init ref="id8"/>
 		<transition>
