@@ -1,24 +1,274 @@
-<?xml version="1.0" encoding="utf-8"?><!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_1.dtd'><nta><declaration>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>
 const int Max = 5;
 int coke := Max;
 int sprite := Max;
 
 chan refill, insert_coin, return_coin, get_coke, get_sprite;
 
-</declaration><template><name x="5" y="5">User</name><declaration>bool getcoke:=0;
+</declaration>
+	<template>
+		<name>Item_Selection</name>
+		<location id="id0" x="-178" y="-246">
+			<name x="-188" y="-280">Selecting</name>
+		</location>
+		<location id="id1" x="-178" y="-34">
+			<name x="-153" y="-42">Select</name>
+			<committed/>
+		</location>
+		<location id="id2" x="-178" y="110">
+			<name x="-188" y="76">Check</name>
+		</location>
+		<location id="id3" x="-493" y="34">
+			<name x="-552" y="0">InStock</name>
+			<committed/>
+		</location>
+		<location id="id4" x="-493" y="-221">
+			<name x="-503" y="-255">Paying</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-365" y="-263">Restart?</label>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-646" y="-76">StartPaymentProcess!</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-476" y="59">Available?</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-348" y="-161">Select_Coke?</label>
+			<label kind="assignment" x="-416" y="-127">Selected_Product := Coke</label>
+			<nail x="-255" y="-127"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="42" y="42">Unavailable?</label>
+			<nail x="127" y="76"/>
+			<nail x="127" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-170" y="8">Product_Selected!</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-119" y="-161">Select_Chips?</label>
+			<label kind="assignment" x="-119" y="-128">Selected_Product := Chips</label>
+			<nail x="-127" y="-136"/>
+		</transition>
+	</template>
+	<template>
+		<name>Inventory_Management</name>
+		<location id="id5" x="-34" y="-8">
+			<name x="-76" y="-50">Standby</name>
+		</location>
+		<location id="id6" x="331" y="-8">
+			<name x="321" y="-42">Checking</name>
+		</location>
+		<location id="id7" x="-34" y="187">
+			<name x="-17" y="170">Update Stock</name>
+		</location>
+		<init ref="id5"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="59" y="25">Product_Selected?</label>
+			<nail x="85" y="17"/>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id5"/>
+			<nail x="-93" y="94"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="0" y="85">DispnsingSOmething?</label>
+			<nail x="-9" y="94"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="34" y="-93">Coke_Quantity &gt; 0</label>
+			<label kind="synchronisation" x="51" y="-161">Available!</label>
+			<nail x="119" y="-136"/>
+			<nail x="51" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id5"/>
+			<label kind="guard" x="34" y="-289">Coke_Quantity == 0</label>
+			<label kind="synchronisation" x="51" y="-263">Unavailable!</label>
+			<nail x="127" y="-238"/>
+			<nail x="51" y="-238"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">User</name>
+		<declaration>bool getcoke:=0;
 bool getsprite:=0;
 //bool drinkcoke;
-//bool drinksprite;</declaration><location id="id0" x="-178" y="-93"><name x="-178" y="-76">select_sprite</name><committed/></location><location id="id1" x="-280" y="-93"><name x="-322" y="-84">select_coke</name><committed/></location><location id="id2" x="-232" y="-192"><name x="-212" y="-204">select</name></location><location id="id3" x="-229" y="-280"><name x="-239" y="-314">Thirsty</name></location><init ref="id3"/><transition><source ref="id1"/><target ref="id3"/><label kind="synchronisation" x="-467" y="-221">get_coke?</label><label kind="assignment" x="-510" y="-178">coke := coke -1,
-getcoke:=0</label><nail x="-399" y="-93"/><nail x="-399" y="-348"/><nail x="-272" y="-348"/></transition><transition><source ref="id0"/><target ref="id3"/><label kind="synchronisation" x="33" y="-199">get_sprite?</label><label kind="assignment" x="-85" y="-88">sprite := sprite -1,
-getsprite:=0</label><nail x="24" y="-88"/><nail x="24" y="-275"/></transition><transition><source ref="id2"/><target ref="id3"/><label kind="synchronisation" x="-365" y="-246">return_coin?</label><nail x="-288" y="-238"/></transition><transition><source ref="id2"/><target ref="id2"/><label kind="synchronisation" x="-306" y="-204">refill!</label><nail x="-263" y="-204"/><nail x="-272" y="-204"/><nail x="-272" y="-178"/></transition><transition><source ref="id3"/><target ref="id3"/><label kind="synchronisation" x="-303" y="-306">refill!</label><nail x="-269" y="-297"/><nail x="-269" y="-272"/></transition><transition><source ref="id2"/><target ref="id0"/><label kind="guard" x="-195" y="-161">sprite &gt; 0</label><label kind="assignment" x="-178" y="-136">getsprite := true</label></transition><transition><source ref="id2"/><target ref="id1"/><label kind="guard" x="-306" y="-161">coke &gt;0</label><label kind="assignment" x="-348" y="-136">getcoke:=true</label></transition><transition><source ref="id3"/><target ref="id2"/><label kind="synchronisation" x="-224" y="-248">insert_coin!</label><nail x="-119" y="-238"/></transition></template><template><name>Soda_Machine</name><declaration>const int Max = 5;
+//bool drinksprite;</declaration>
+		<location id="id8" x="-218" y="-147">
+			<name x="-218" y="-130">select_sprite</name>
+			<committed/>
+		</location>
+		<location id="id9" x="-320" y="-147">
+			<name x="-362" y="-138">select_coke</name>
+			<committed/>
+		</location>
+		<location id="id10" x="-272" y="-246">
+			<name x="-252" y="-258">select</name>
+		</location>
+		<location id="id11" x="-269" y="-334">
+			<name x="-279" y="-368">Thirsty</name>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-507" y="-275">get_coke?</label>
+			<label kind="assignment" x="-550" y="-232">coke := coke -1,
+getcoke:=0</label>
+			<nail x="-439" y="-147"/>
+			<nail x="-439" y="-402"/>
+			<nail x="-312" y="-402"/>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-7" y="-253">get_sprite?</label>
+			<label kind="assignment" x="-125" y="-142">sprite := sprite -1,
+getsprite:=0</label>
+			<nail x="-16" y="-142"/>
+			<nail x="-16" y="-329"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-405" y="-300">return_coin?</label>
+			<nail x="-328" y="-292"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-346" y="-258">refill!</label>
+			<nail x="-303" y="-258"/>
+			<nail x="-312" y="-258"/>
+			<nail x="-312" y="-232"/>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-343" y="-360">refill!</label>
+			<nail x="-309" y="-351"/>
+			<nail x="-309" y="-326"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-235" y="-215">sprite &gt; 0</label>
+			<label kind="assignment" x="-218" y="-190">getsprite := true</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id9"/>
+			<label kind="guard" x="-346" y="-215">coke &gt;0</label>
+			<label kind="assignment" x="-388" y="-190">getcoke:=true</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-264" y="-302">insert_coin!</label>
+			<nail x="-159" y="-292"/>
+		</transition>
+	</template>
+	<template>
+		<name>Soda_Machine</name>
+		<declaration>const int Max = 5;
 int coke := Max;
 int sprite := Max;
-</declaration><location id="id4" x="-170" y="34"><name x="-229" y="25">Select</name><label kind="invariant" x="-160" y="40">cost' == 1</label></location><location id="id5" x="-178" y="-178"><name x="-186" y="-218">Start</name><label kind="invariant" x="-248" y="-200">cost'==0</label></location><init ref="id5"/><transition><source ref="id4"/><target ref="id5"/><label kind="guard" x="25" y="-59">sprite &gt; 0</label><label kind="synchronisation" x="25" y="-42">get_sprite!</label><label kind="assignment" x="8" y="-24">sprite := sprite -1,
-cost+=5</label><nail x="16" y="26"/><nail x="16" y="-178"/></transition><transition><source ref="id4"/><target ref="id5"/><label kind="guard" x="-93" y="-68">coke &gt; 0</label><label kind="synchronisation" x="-110" y="-51">get_coke!</label><label kind="assignment" x="-128" y="-32">coke := coke -1,
-cost+=5</label><nail x="-93" y="-76"/></transition><transition><source ref="id4"/><target ref="id5"/><label kind="guard" x="-416" y="-102">(sprite == 0 || coke ==0)</label><label kind="synchronisation" x="-348" y="-85">return_coin!</label><label kind="assignment" x="-328" y="-64">cost+=5</label><nail x="-263" y="-42"/><nail x="-263" y="-136"/></transition><transition><source ref="id4"/><target ref="id4"/><label kind="guard" x="-134" y="139">! (coke == Max || sprite == Max)</label><label kind="synchronisation" x="-170" y="162">refill?</label><label kind="assignment" x="-144" y="85">coke++,
-sprite++,
-cost+=5</label><nail x="-187" y="153"/><nail x="-145" y="153"/></transition><transition><source ref="id5"/><target ref="id4"/><label kind="synchronisation" x="-195" y="-93">insert_coin?</label><label kind="assignment" x="-192" y="-72">cost+=5</label><nail x="-204" y="-68"/></transition><transition><source ref="id5"/><target ref="id5"/><label kind="guard" x="-153" y="-314">not(coke == Max or sprite == Max)</label><label kind="synchronisation" x="-178" y="-339">refill?</label><label kind="assignment" x="-144" y="-280">coke:=coke+1,
-sprite:=sprite+1,
-cost+=5</label><nail x="-206" y="-313"/><nail x="-155" y="-313"/></transition></template><system>system Soda_Machine, User;
+</declaration>
+		<location id="id12" x="-170" y="34">
+			<name x="-229" y="25">Select</name>
+		</location>
+		<location id="id13" x="-178" y="-178">
+			<name x="-186" y="-218">Start</name>
+		</location>
+		<init ref="id13"/>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="25" y="-59">sprite &gt; 0</label>
+			<label kind="synchronisation" x="25" y="-42">get_sprite!</label>
+			<label kind="assignment" x="8" y="-24">sprite := sprite -1</label>
+			<nail x="16" y="26"/>
+			<nail x="16" y="-178"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-93" y="-68">coke &gt; 0</label>
+			<label kind="synchronisation" x="-110" y="-51">get_coke!</label>
+			<label kind="assignment" x="-128" y="-32">coke := coke -1</label>
+			<nail x="-93" y="-76"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-416" y="-102">(sprite == 0 || coke ==0)</label>
+			<label kind="synchronisation" x="-348" y="-85">return_coin!</label>
+			<nail x="-263" y="-42"/>
+			<nail x="-263" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id12"/>
+			<label kind="guard" x="-134" y="139">! (coke == Max || sprite == Max)</label>
+			<label kind="synchronisation" x="-170" y="162">refill?</label>
+			<label kind="assignment" x="-144" y="85">coke++,
+sprite++</label>
+			<nail x="-187" y="153"/>
+			<nail x="-145" y="153"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-195" y="-93">insert_coin?</label>
+			<nail x="-204" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id13"/>
+			<label kind="guard" x="-153" y="-314">not(coke == Max or sprite == Max)</label>
+			<label kind="synchronisation" x="-178" y="-339">refill?</label>
+			<label kind="assignment" x="-144" y="-280">coke:=coke+1,
+sprite:=sprite+1</label>
+			<nail x="-206" y="-313"/>
+			<nail x="-155" y="-313"/>
+		</transition>
+	</template>
+	<system>system Soda_Machine, User;
 
-</system></nta>
+</system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
