@@ -8,7 +8,8 @@ int sprite := Max;
 
 chan refill, insert_coin, return_coin, get_coke, get_sprite;
 
-chan logged_in, failed;</declaration>
+chan log_in, logged_in, failed,
+dispense, in_stock, not_in_stock, refund, restart;</declaration>
 	<template>
 		<name>Dispensing</name>
 		<location id="id0" x="-17" y="-144">
@@ -27,12 +28,12 @@ chan logged_in, failed;</declaration>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="51" y="-119">Refund!</label>
+			<label kind="synchronisation" x="51" y="-119">refund!</label>
 		</transition>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="-143" y="-110">Restart!</label>
+			<label kind="synchronisation" x="-143" y="-110">restart!</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
@@ -113,7 +114,7 @@ int errors := 0;</declaration>
 			<source ref="id4"/>
 			<target ref="id5"/>
 			<label kind="synchronisation" x="-323" y="-331">log_in?</label>
-			<label kind="assignment" x="-323" y="-314">error:=0</label>
+			<label kind="assignment" x="-323" y="-314">errors:=0</label>
 		</transition>
 	</template>
 	<template>
