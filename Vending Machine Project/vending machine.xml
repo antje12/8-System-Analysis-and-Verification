@@ -11,6 +11,104 @@ chan refill, insert_coin, return_coin, get_coke, get_sprite;
 chan log_in, logged_in, failed,
 dispense, in_stock, not_in_stock, refund, restart, update_stock;</declaration>
 <template>
+		<name>Payment Processing</name>
+		<location id="id4" x="-51" y="-246">
+			<name x="-34" y="-280">Start</name>
+		</location>
+		<location id="id5" x="102" y="-246">
+			<name x="119" y="-263">Card Error</name>
+		</location>
+		<location id="id6" x="-323" y="-331">
+			<name x="-451" y="-340">Account payment</name>
+		</location>
+		<location id="id7" x="102" y="-136">
+			<name x="119" y="-144">Card payment</name>
+		</location>
+		<location id="id8" x="-323" y="25">
+			<name x="-348" y="42">Ready</name>
+		</location>
+		<location id="id9" x="289" y="25">
+			<name x="314" y="17">Refund</name>
+			<committed/>
+		</location>
+		<location id="id10" x="-323" y="-246">
+			<name x="-416" y="-255">Logging in</name>
+		</location>
+		<location id="id11" x="-51" y="-391">
+			<name x="-76" y="-425">Standby</name>
+		</location>
+		<location id="id12" x="-323" y="-110">
+			<committed/>
+		</location>
+		<init ref="id11"/>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-391" y="-59">dispense!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-399" y="-195">logged_in?</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-442" y="-382">restart!</label>
+			<nail x="-485" y="25"/>
+			<nail x="-485" y="-391"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-255" y="-238">failed?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id4"/>
+		</transition>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="170" y="-382">restart!</label>
+			<nail x="289" y="-391"/>
+			<nail x="42" y="-391"/>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-374" y="-297">log_in!</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="34" y="34">refund?</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="-127" y="-34">dispense!</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-255" y="-340">account_payment_selected?</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id5"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-144" y="-204">card_payment_selected?</label>
+		</transition>
+	</template>
+<template>
 		<name>Item_Selection</name>
 		<location id="id0" x="-178" y="-246">
 			<name x="-188" y="-280">Selecting</name>
