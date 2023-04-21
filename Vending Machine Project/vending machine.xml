@@ -10,9 +10,16 @@ update_error, updated_stock;
 broadcast chan start_payment_process, restart, unavailable;
 
 int [0,1] selected_product;
+// 0 = Coke
+// 1 = Chips
 
 int coke_quantity = 1;
-int chips_quantity = 1;</declaration>
+int chips_quantity = 1;
+
+int [0,1] message_shown;
+// 0 = "Select a product."
+// 1 = "Product not in stock."
+</declaration>
 	<template>
 		<name>New_User</name>
 		<location id="id0" x="-110" y="-272">
@@ -42,9 +49,9 @@ int chips_quantity = 1;</declaration>
 		<transition>
 			<source ref="id3"/>
 			<target ref="id0"/>
-			<label kind="synchronisation" x="-390" y="-72">unavailable?</label>
-			<nail x="-408" y="-42"/>
-			<nail x="-374" y="-238"/>
+			<label kind="synchronisation" x="-263" y="-263">unavailable?</label>
+			<nail x="-272" y="-68"/>
+			<nail x="-272" y="-272"/>
 		</transition>
 		<transition>
 			<source ref="id6"/>
