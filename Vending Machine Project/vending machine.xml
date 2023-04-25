@@ -240,6 +240,7 @@ int chips_quantity = Quantity_max;</declaration>
 		</location>
 		<location id="id19" x="331" y="-8">
 			<name x="321" y="-42">Checking</name>
+			<committed/>
 		</location>
 		<location id="id20" x="-212" y="-8">
 			<name x="-280" y="-42">Update_Stock</name>
@@ -588,7 +589,7 @@ timer=0</label>
 			<label kind="assignment" x="-42" y="-85">timer = 0</label>
 		</transition>
 	</template>
-	<system>system Item_Selection, Inventory_Management, Payment_Processing, Dispensing, User_Authentication, User;</system>
+	<system>system Item_Selection, Inventory_Management, Payment_Processing, Dispensing, User_Authentication, User, Maintainer;</system>
 	<queries>
 		<query>
 			<formula>A[] not deadlock</formula>
