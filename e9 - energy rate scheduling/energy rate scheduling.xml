@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+
+broadcast chan use;
+broadcast chan done;
+
+//chan use;
+//chan done;
+
+hybrid clock energy;
+int TIME;
+
+
+
+</declaration>
+	<template>
+		<name x="5" y="5">resource</name>
+		<declaration>// Place local declarations here.
+
+clock x;
+//clock rate;</declaration>
+		<location id="id0" x="-170" y="-51">
+			<name x="-180" y="-85">idle</name>
+		</location>
+		<location id="id1" x="42" y="-51">
+			<name x="32" y="-85">inuse</name>
+			<label kind="invariant" x="34" y="-34">x&lt;=TIME &amp;&amp; energy'==3</label>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id0"/>
+			<label kind="guard" x="-119" y="-161">x&gt;=TIME</label>
+			<label kind="synchronisation" x="-17" y="-144">done!</label>
+			<label kind="assignment" x="-93" y="-102">x:=0</label>
+			<nail x="-68" y="-144"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-144" y="-51">use?</label>
+			<label kind="assignment" x="-102" y="42">x:=0</label>
+			<nail x="-76" y="34"/>
+		</transition>
+	</template>
+	<template>
+		<name>negative_resource</name>
+		<declaration>clock x;</declaration>
+		<location id="id2" x="-170" y="-51">
+			<name x="-180" y="-85">idle</name>
+			<label kind="invariant" x="-180" y="-34">energy'==2</label>
+		</location>
+		<location id="id3" x="42" y="-51">
+			<name x="32" y="-85">inuse</name>
+			<label kind="invariant" x="32" y="-34">x&lt;=TIME &amp;&amp; energy'==-4</label>
+		</location>
+		<init ref="id2"/>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-75" y="-127">x&gt;=TIME</label>
+			<label kind="synchronisation" x="-25" y="-127">done!</label>
+			<label kind="assignment" x="-93" y="-102">x:=0</label>
+			<nail x="-68" y="-144"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-144" y="-51">use?</label>
+			<label kind="assignment" x="-102" y="42">x:=0</label>
+			<nail x="-76" y="34"/>
+		</transition>
+	</template>
+	<template>
+		<name>task</name>
+		<declaration>clock y;</declaration>
+		<location id="id4" x="-357" y="-289">
+			<name x="-367" y="-323">Init</name>
+			<label kind="invariant" x="-367" y="-272">y&lt;=2</label>
+		</location>
+		<location id="id5" x="-229" y="-289">
+			<name x="-239" y="-323">using</name>
+		</location>
+		<location id="id6" x="-85" y="-289">
+			<name x="-95" y="-323">Done</name>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-211" y="-310">done?</label>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-339" y="-323">y&gt;=2</label>
+			<label kind="synchronisation" x="-339" y="-306">use!</label>
+			<label kind="assignment" x="-339" y="-289">TIME:=3, y:=0</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+
+// List one or more processes to be composed into a system.
+system resource, task;
+
+//system negative_resource, task;
+    </system>
+	<queries>
+		<query>
+			<formula>E[&lt;=100; 2000] (max:energy)</formula>
+			<comment>all channels have to be broadcast </comment>
+		</query>
+		<query>
+			<formula>inf{task.Done}: energy</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; task.Done &amp;&amp; energy &lt;= 10</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
