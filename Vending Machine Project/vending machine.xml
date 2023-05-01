@@ -499,7 +499,7 @@ clock timer;</declaration>
 		<transition>
 			<source ref="id35"/>
 			<target ref="id32"/>
-			<label kind="synchronisation" x="-195" y="-323">logged_in!</label>
+			<label kind="synchronisation" x="-212" y="-314">logged_in!</label>
 		</transition>
 		<transition>
 			<source ref="id33"/>
@@ -523,7 +523,8 @@ clock timer;</declaration>
 			<source ref="id32"/>
 			<target ref="id33"/>
 			<label kind="synchronisation" x="-323" y="-331">log_in?</label>
-			<label kind="assignment" x="-323" y="-314">errors=0</label>
+			<label kind="assignment" x="-323" y="-314">errors=0,
+timer=0</label>
 		</transition>
 	</template>
 	<template>
@@ -661,7 +662,7 @@ or
 			<comment></comment>
 		</query>
 		<query>
-			<formula>A[] !(User_Authentication.Accept and User_Authentication.x &gt; 8)</formula>
+			<formula></formula>
 			<comment></comment>
 		</query>
 	</queries>
