@@ -24,7 +24,9 @@ int [0,5] message_shown;
 // 2 = "Card rejected."
 // 3 = "Login rejected."
 // 4 = "Refunding money."
-// 5 = "Product stuck."</declaration>
+// 5 = "Product stuck."
+
+hybrid clock energy;</declaration>
 	<template>
 		<name>User</name>
 		<location id="id0" x="-25" y="-425">
@@ -223,17 +225,19 @@ int [0,5] message_shown;
 		<name>Inventory_Management</name>
 		<declaration>const int Quantity_max = 10;
 int coke_quantity = Quantity_max;
-int chips_quantity = Quantity_max;</declaration>
+int chips_quantity = Quantity_max;
+
+clock timer;</declaration>
 		<location id="id16" x="-34" y="-8">
-			<name x="-76" y="-50">Standby</name>
+			<name x="-25" y="0">Standby</name>
 		</location>
 		<location id="id17" x="331" y="-8">
-			<name x="321" y="-42">Checking</name>
+			<name x="280" y="0">Checking</name>
 			<committed/>
 		</location>
 		<location id="id18" x="-212" y="-8">
-			<name x="-280" y="-42">Update_Stock</name>
-			<committed/>
+			<name x="-263" y="-42">Update_Stock</name>
+			<label kind="invariant" x="-289" y="-59">timer &lt; 2 &amp;&amp; energy'==1</label>
 		</location>
 		<location id="id19" x="-263" y="85">
 			<committed/>
@@ -261,8 +265,8 @@ chips_quantity = Quantity_max</label>
 		<transition>
 			<source ref="id16"/>
 			<target ref="id22"/>
-			<label kind="synchronisation" x="-93" y="-110">refill?</label>
-			<nail x="-68" y="-85"/>
+			<label kind="synchronisation" x="-93" y="-93">refill?</label>
+			<nail x="-59" y="-93"/>
 		</transition>
 		<transition>
 			<source ref="id21"/>
@@ -287,12 +291,13 @@ chips_quantity = Quantity_max</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id21"/>
+			<label kind="guard" x="-357" y="-8">timer &gt; 2</label>
 			<label kind="synchronisation" x="-365" y="-25">update_error!</label>
 		</transition>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id20"/>
-			<label kind="guard" x="-212" y="25">selected_product == 1</label>
+			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &gt; 1</label>
 			<label kind="assignment" x="-212" y="42">coke_quantity -= 1</label>
 		</transition>
 		<transition>
@@ -322,14 +327,15 @@ coke_quantity == 0</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-408" y="34">selected_product == 2</label>
-			<label kind="assignment" x="-408" y="51">chips_quantity -= 1</label>
+			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &gt; 1</label>
+			<label kind="assignment" x="-399" y="59">chips_quantity -= 1</label>
 			<nail x="-263" y="34"/>
 		</transition>
 		<transition>
 			<source ref="id16"/>
 			<target ref="id18"/>
 			<label kind="synchronisation" x="-187" y="-25">update_stock?</label>
+			<label kind="assignment" x="-170" y="-8">timer:=0</label>
 		</transition>
 		<transition>
 			<source ref="id17"/>
@@ -360,8 +366,8 @@ chips_quantity == 0</label>
 			<name x="331" y="-323">Card_Error</name>
 			<committed/>
 		</location>
-		<location id="id25" x="-67" y="-398">
-			<name x="-194" y="-407">Account_Payment</name>
+		<location id="id25" x="-68" y="-399">
+			<name x="-195" y="-408">Account_Payment</name>
 		</location>
 		<location id="id26" x="314" y="-204">
 			<name x="331" y="-212">Card_Payment</name>
@@ -460,14 +466,12 @@ chips_quantity == 0</label>
 	<template>
 		<name>User_Authentication</name>
 		<declaration>const int Max = 3;
-int errors = 0;
-
-clock timer;</declaration>
+int errors = 0;</declaration>
 		<location id="id32" x="-263" y="-357">
 			<name x="-273" y="-391">Standby</name>
 		</location>
 		<location id="id33" x="-263" y="-246">
-			<name x="-273" y="-280">Log_In</name>
+			<name x="-323" y="-263">Log_In</name>
 		</location>
 		<location id="id34" x="-263" y="-144">
 			<name x="-273" y="-178">Reject</name>
@@ -508,7 +512,7 @@ clock timer;</declaration>
 		<transition>
 			<source ref="id37"/>
 			<target ref="id33"/>
-			<label kind="guard" x="-195" y="-221">errors &lt; Max</label>
+			<label kind="guard" x="-204" y="-204">errors &lt; Max</label>
 		</transition>
 		<transition>
 			<source ref="id34"/>
@@ -523,13 +527,11 @@ clock timer;</declaration>
 			<source ref="id32"/>
 			<target ref="id33"/>
 			<label kind="synchronisation" x="-323" y="-331">log_in?</label>
-			<label kind="assignment" x="-323" y="-314">errors=0,
-timer=0</label>
+			<label kind="assignment" x="-323" y="-314">errors=0</label>
 		</transition>
 	</template>
 	<template>
 		<name>Dispensing</name>
-		<declaration>clock timer;</declaration>
 		<location id="id38" x="-17" y="-144">
 			<name x="-27" y="-178">Standby</name>
 		</location>
@@ -578,7 +580,6 @@ timer=0</label>
 			<source ref="id38"/>
 			<target ref="id42"/>
 			<label kind="synchronisation" x="-42" y="-102">dispense?</label>
-			<label kind="assignment" x="-42" y="-85">timer = 0</label>
 		</transition>
 	</template>
 	<system>system Item_Selection, Inventory_Management, Payment_Processing, Dispensing, User_Authentication, User, Maintainer;</system>
