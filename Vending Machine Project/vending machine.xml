@@ -237,7 +237,7 @@ clock timer;</declaration>
 		</location>
 		<location id="id18" x="-212" y="-8">
 			<name x="-263" y="-42">Update_Stock</name>
-			<label kind="invariant" x="-289" y="-59">timer &lt; 2 &amp;&amp; energy'==1</label>
+			<label kind="invariant" x="-289" y="-59">timer &lt;= 5 &amp;&amp; energy'==3</label>
 		</location>
 		<location id="id19" x="-263" y="85">
 			<committed/>
@@ -291,13 +291,13 @@ chips_quantity = Quantity_max</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id21"/>
-			<label kind="guard" x="-357" y="-8">timer &gt; 2</label>
+			<label kind="guard" x="-357" y="-8">timer &gt;= 5</label>
 			<label kind="synchronisation" x="-365" y="-25">update_error!</label>
 		</transition>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id20"/>
-			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &gt; 1</label>
+			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &lt; 5</label>
 			<label kind="assignment" x="-212" y="42">coke_quantity -= 1</label>
 		</transition>
 		<transition>
@@ -327,7 +327,7 @@ coke_quantity == 0</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &gt; 1</label>
+			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &lt; 5</label>
 			<label kind="assignment" x="-399" y="59">chips_quantity -= 1</label>
 			<nail x="-263" y="34"/>
 		</transition>
@@ -663,7 +663,159 @@ or
 			<comment></comment>
 		</query>
 		<query>
+			<formula>E&lt;&gt; (Dispensing.Success and (Inventory_Management.timer &lt;= 5))</formula>
+			<comment></comment>
+		</query>
+		<query>
 			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Start</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Thirsty</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Hungry</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Awaiting_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Awaiting_Response</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Requested</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Filling</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Selecting</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Select</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Check</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.In_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Paying</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Not_In_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Checking</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Update_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Maintenance</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Start</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Card_Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Account_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Card_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Ready</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Refund</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Logging_In</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Log_In</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Reject</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Accept</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Retry</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Dispense_Product</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Success</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Error</formula>
 			<comment></comment>
 		</query>
 	</queries>
