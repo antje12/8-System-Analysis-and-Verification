@@ -667,6 +667,10 @@ or
 			<comment></comment>
 		</query>
 		<query>
+			<formula>A[] not (Dispensing.Success and Inventory_Management.timer &gt; 5)</formula>
+			<comment></comment>
+		</query>
+		<query>
 			<formula></formula>
 			<comment></comment>
 		</query>
