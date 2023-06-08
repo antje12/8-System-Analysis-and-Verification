@@ -5,9 +5,10 @@
 chan log_in, logged_in,
 dispense, refund, update_stock,
 account_payment_selected, card_payment_selected, 
-select_chips, product_selected, available, select_coke,
+product_selected, available,
 update_error, updated_stock,
-refill, refill_done, card_payment_error;
+refill, refill_done, card_payment_error,
+select_product[3];
 
 broadcast chan start_payment_process, restart, unavailable, failed;
 
@@ -96,13 +97,13 @@ hybrid clock energy;</declaration>
 			<source ref="id2"/>
 			<target ref="id3"/>
 			<label kind="guard" x="9" y="-306">maintenance == 0</label>
-			<label kind="synchronisation" x="8" y="-289">select_chips!</label>
+			<label kind="synchronisation" x="0" y="-289">select_product[2]!</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id3"/>
 			<label kind="guard" x="-161" y="-306">maintenance == 0</label>
-			<label kind="synchronisation" x="-153" y="-289">select_coke!</label>
+			<label kind="synchronisation" x="-153" y="-289">select_product[1]!</label>
 		</transition>
 		<transition>
 			<source ref="id0"/>
@@ -200,9 +201,9 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id10"/>
 			<target ref="id11"/>
-			<label kind="synchronisation" x="-348" y="-161">select_coke?</label>
-			<label kind="assignment" x="-391" y="-144">selected_product := 1</label>
-			<nail x="-255" y="-136"/>
+			<label kind="select" x="-246" y="-187">e : int[0,2]</label>
+			<label kind="synchronisation" x="-246" y="-171">select_product[e]?</label>
+			<label kind="assignment" x="-246" y="-153">selected_product := e</label>
 		</transition>
 		<transition>
 			<source ref="id12"/>
@@ -213,13 +214,6 @@ hybrid clock energy;</declaration>
 			<source ref="id11"/>
 			<target ref="id12"/>
 			<label kind="synchronisation" x="-170" y="8">product_selected!</label>
-		</transition>
-		<transition>
-			<source ref="id10"/>
-			<target ref="id11"/>
-			<label kind="synchronisation" x="-119" y="-161">select_chips?</label>
-			<label kind="assignment" x="-119" y="-128">selected_product := 2</label>
-			<nail x="-119" y="-136"/>
 		</transition>
 	</template>
 	<template>
@@ -240,23 +234,20 @@ clock timer;</declaration>
 			<name x="-263" y="-42">Update_Stock</name>
 			<label kind="invariant" x="-289" y="-59">timer &lt;= 5 &amp;&amp; energy'==3</label>
 		</location>
-		<location id="id19" x="-263" y="85">
+		<location id="id19" x="-212" y="93">
 			<committed/>
 		</location>
-		<location id="id20" x="-212" y="93">
-			<committed/>
-		</location>
-		<location id="id21" x="-450" y="-8">
+		<location id="id20" x="-450" y="-8">
 			<name x="-460" y="-42">Error</name>
 			<committed/>
 		</location>
-		<location id="id22" x="-221" y="-110">
+		<location id="id21" x="-221" y="-110">
 			<name x="-314" y="-136">Maintenance</name>
 			<committed/>
 		</location>
 		<init ref="id16"/>
 		<transition>
-			<source ref="id22"/>
+			<source ref="id21"/>
 			<target ref="id16"/>
 			<label kind="synchronisation" x="-212" y="-178">refill_done!</label>
 			<label kind="assignment" x="-212" y="-161">stock[1] = quantity_max,
@@ -265,12 +256,12 @@ stock[2] = quantity_max</label>
 		</transition>
 		<transition>
 			<source ref="id16"/>
-			<target ref="id22"/>
+			<target ref="id21"/>
 			<label kind="synchronisation" x="-93" y="-93">refill?</label>
 			<nail x="-59" y="-93"/>
 		</transition>
 		<transition>
-			<source ref="id21"/>
+			<source ref="id20"/>
 			<target ref="id16"/>
 			<nail x="-306" y="-68"/>
 			<nail x="-136" y="-68"/>
@@ -278,34 +269,26 @@ stock[2] = quantity_max</label>
 		<transition>
 			<source ref="id19"/>
 			<target ref="id16"/>
-			<label kind="synchronisation" x="-187" y="102">updated_stock!</label>
-			<nail x="-221" y="119"/>
-			<nail x="-51" y="119"/>
-		</transition>
-		<transition>
-			<source ref="id20"/>
-			<target ref="id16"/>
 			<label kind="synchronisation" x="-187" y="76">updated_stock!</label>
 			<nail x="-68" y="93"/>
 			<nail x="-68" y="93"/>
 		</transition>
 		<transition>
 			<source ref="id18"/>
-			<target ref="id21"/>
+			<target ref="id20"/>
 			<label kind="guard" x="-357" y="-8">timer &gt;= 5</label>
 			<label kind="synchronisation" x="-365" y="-25">update_error!</label>
 		</transition>
 		<transition>
 			<source ref="id18"/>
-			<target ref="id20"/>
-			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &lt; 5</label>
-			<label kind="assignment" x="-212" y="42">stock[selected_product] -= 1</label>
+			<target ref="id19"/>
+			<label kind="guard" x="-289" y="25">timer &lt; 5</label>
+			<label kind="assignment" x="-289" y="42">stock[selected_product] -= 1</label>
 		</transition>
 		<transition>
 			<source ref="id17"/>
 			<target ref="id16"/>
-			<label kind="guard" x="59" y="-93">selected_product == 1 &amp;&amp;
-stock[selected_product] &gt; 0</label>
+			<label kind="guard" x="59" y="-76">stock[selected_product] &gt; 0</label>
 			<label kind="synchronisation" x="59" y="-59">available!</label>
 			<nail x="238" y="-34"/>
 			<nail x="59" y="-34"/>
@@ -313,8 +296,7 @@ stock[selected_product] &gt; 0</label>
 		<transition>
 			<source ref="id17"/>
 			<target ref="id16"/>
-			<label kind="guard" x="59" y="-178">selected_product == 1 &amp;&amp;
-stock[selected_product] == 0</label>
+			<label kind="guard" x="59" y="-161">stock[selected_product] == 0</label>
 			<label kind="synchronisation" x="59" y="-144">unavailable!</label>
 			<label kind="assignment" x="59" y="-127">message_shown = 1</label>
 			<nail x="238" y="-102"/>
@@ -326,141 +308,115 @@ stock[selected_product] == 0</label>
 			<label kind="synchronisation" x="102" y="0">product_selected?</label>
 		</transition>
 		<transition>
-			<source ref="id18"/>
-			<target ref="id19"/>
-			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &lt; 5</label>
-			<label kind="assignment" x="-399" y="59">stock[selected_product] -= 1</label>
-			<nail x="-263" y="34"/>
-		</transition>
-		<transition>
 			<source ref="id16"/>
 			<target ref="id18"/>
 			<label kind="synchronisation" x="-187" y="-25">update_stock?</label>
 			<label kind="assignment" x="-170" y="-8">timer:=0</label>
 		</transition>
-		<transition>
-			<source ref="id17"/>
-			<target ref="id16"/>
-			<label kind="guard" x="59" y="-246">selected_product == 2 &amp;&amp;
-stock[selected_product] &gt; 0</label>
-			<label kind="synchronisation" x="59" y="-212">available!</label>
-			<nail x="238" y="-187"/>
-			<nail x="59" y="-187"/>
-		</transition>
-		<transition>
-			<source ref="id17"/>
-			<target ref="id16"/>
-			<label kind="guard" x="59" y="-331">selected_product == 2 &amp;&amp;
-stock[selected_product] == 0</label>
-			<label kind="synchronisation" x="59" y="-297">unavailable!</label>
-			<label kind="assignment" x="59" y="-280">message_shown = 1</label>
-			<nail x="238" y="-255"/>
-			<nail x="51" y="-255"/>
-		</transition>
 	</template>
 	<template>
 		<name>Payment_Processing</name>
-		<location id="id23" x="161" y="-314">
+		<location id="id22" x="161" y="-314">
 			<name x="178" y="-348">Start</name>
 		</location>
-		<location id="id24" x="314" y="-314">
+		<location id="id23" x="314" y="-314">
 			<name x="331" y="-323">Card_Error</name>
 			<committed/>
 		</location>
-		<location id="id25" x="-68" y="-399">
+		<location id="id24" x="-68" y="-399">
 			<name x="-195" y="-408">Account_Payment</name>
 		</location>
-		<location id="id26" x="314" y="-204">
+		<location id="id25" x="314" y="-204">
 			<name x="331" y="-212">Card_Payment</name>
 			<committed/>
 		</location>
-		<location id="id27" x="-68" y="-42">
+		<location id="id26" x="-68" y="-42">
 			<name x="-93" y="-25">Ready</name>
 		</location>
-		<location id="id28" x="467" y="-42">
+		<location id="id27" x="467" y="-42">
 			<name x="492" y="-50">Refund</name>
 			<committed/>
 		</location>
-		<location id="id29" x="-68" y="-313">
+		<location id="id28" x="-68" y="-313">
 			<name x="-161" y="-322">Logging_In</name>
 		</location>
-		<location id="id30" x="161" y="-459">
+		<location id="id29" x="161" y="-459">
 			<name x="136" y="-493">Standby</name>
 		</location>
-		<location id="id31" x="-68" y="-177">
+		<location id="id30" x="-68" y="-177">
 			<committed/>
 		</location>
-		<init ref="id30"/>
+		<init ref="id29"/>
 		<transition>
-			<source ref="id31"/>
-			<target ref="id27"/>
+			<source ref="id30"/>
+			<target ref="id26"/>
 			<label kind="synchronisation" x="-136" y="-126">dispense!</label>
 		</transition>
 		<transition>
-			<source ref="id29"/>
-			<target ref="id31"/>
+			<source ref="id28"/>
+			<target ref="id30"/>
 			<label kind="synchronisation" x="-144" y="-262">logged_in?</label>
 		</transition>
 		<transition>
-			<source ref="id27"/>
-			<target ref="id30"/>
+			<source ref="id26"/>
+			<target ref="id29"/>
 			<label kind="synchronisation" x="-178" y="-68">restart?</label>
 			<nail x="-204" y="-42"/>
 			<nail x="-204" y="-458"/>
 		</transition>
 		<transition>
-			<source ref="id24"/>
-			<target ref="id23"/>
+			<source ref="id23"/>
+			<target ref="id22"/>
 			<label kind="synchronisation" x="229" y="-348">card_payment_error!</label>
 		</transition>
 		<transition>
-			<source ref="id29"/>
-			<target ref="id23"/>
+			<source ref="id28"/>
+			<target ref="id22"/>
 			<label kind="synchronisation" x="9" y="-305">failed?</label>
 		</transition>
 		<transition>
-			<source ref="id30"/>
-			<target ref="id23"/>
+			<source ref="id29"/>
+			<target ref="id22"/>
 			<label kind="synchronisation" x="161" y="-416">start_payment_process?</label>
 		</transition>
 		<transition>
-			<source ref="id28"/>
-			<target ref="id30"/>
+			<source ref="id27"/>
+			<target ref="id29"/>
 			<label kind="synchronisation" x="382" y="-459">restart!</label>
 			<nail x="467" y="-458"/>
 			<nail x="254" y="-459"/>
 		</transition>
 		<transition>
-			<source ref="id25"/>
-			<target ref="id29"/>
-			<label kind="synchronisation" x="-119" y="-364">log_in!</label>
-		</transition>
-		<transition>
-			<source ref="id27"/>
+			<source ref="id24"/>
 			<target ref="id28"/>
-			<label kind="synchronisation" x="238" y="-85">refund?</label>
-			<label kind="assignment" x="221" y="-68">message_shown = 4</label>
+			<label kind="synchronisation" x="-119" y="-364">log_in!</label>
 		</transition>
 		<transition>
 			<source ref="id26"/>
 			<target ref="id27"/>
+			<label kind="synchronisation" x="238" y="-85">refund?</label>
+			<label kind="assignment" x="221" y="-68">message_shown = 4</label>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id26"/>
 			<label kind="synchronisation" x="18" y="-203">dispense!</label>
 			<nail x="-42" y="-203"/>
 			<nail x="-42" y="-84"/>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id25"/>
+			<source ref="id22"/>
+			<target ref="id24"/>
 			<label kind="synchronisation" x="-51" y="-416">account_payment_selected?</label>
 		</transition>
 		<transition>
-			<source ref="id26"/>
-			<target ref="id24"/>
+			<source ref="id25"/>
+			<target ref="id23"/>
 			<label kind="assignment" x="323" y="-272">message_shown = 2</label>
 		</transition>
 		<transition>
-			<source ref="id23"/>
-			<target ref="id26"/>
+			<source ref="id22"/>
+			<target ref="id25"/>
 			<label kind="synchronisation" x="93" y="-255">card_payment_selected?</label>
 		</transition>
 	</template>
@@ -468,118 +424,118 @@ stock[selected_product] == 0</label>
 		<name>User_Authentication</name>
 		<declaration>const int errors_max = 3;
 int errors = 0;</declaration>
-		<location id="id32" x="-263" y="-357">
+		<location id="id31" x="-263" y="-357">
 			<name x="-273" y="-391">Standby</name>
 		</location>
-		<location id="id33" x="-263" y="-246">
+		<location id="id32" x="-263" y="-246">
 			<name x="-323" y="-263">Log_In</name>
 		</location>
-		<location id="id34" x="-263" y="-144">
+		<location id="id33" x="-263" y="-144">
 			<name x="-273" y="-178">Reject</name>
 			<committed/>
 		</location>
-		<location id="id35" x="-119" y="-246">
+		<location id="id34" x="-119" y="-246">
 			<name x="-129" y="-280">Accept</name>
 			<committed/>
 		</location>
-		<location id="id36" x="-68" y="-357">
+		<location id="id35" x="-68" y="-357">
 			<name x="-78" y="-391">Error</name>
 			<committed/>
 		</location>
-		<location id="id37" x="-68" y="-144">
+		<location id="id36" x="-68" y="-144">
 			<name x="-78" y="-178">Retry</name>
 		</location>
-		<init ref="id32"/>
+		<init ref="id31"/>
 		<transition>
-			<source ref="id37"/>
-			<target ref="id36"/>
+			<source ref="id36"/>
+			<target ref="id35"/>
 			<label kind="guard" x="-59" y="-263">errors &gt;= errors_max</label>
 			<label kind="assignment" x="-59" y="-246">message_shown = 3</label>
 		</transition>
 		<transition>
-			<source ref="id36"/>
-			<target ref="id32"/>
+			<source ref="id35"/>
+			<target ref="id31"/>
 			<label kind="synchronisation" x="-187" y="-382">failed!</label>
 		</transition>
 		<transition>
-			<source ref="id35"/>
-			<target ref="id32"/>
+			<source ref="id34"/>
+			<target ref="id31"/>
 			<label kind="synchronisation" x="-212" y="-314">logged_in!</label>
 		</transition>
 		<transition>
-			<source ref="id33"/>
-			<target ref="id35"/>
+			<source ref="id32"/>
+			<target ref="id34"/>
 		</transition>
 		<transition>
-			<source ref="id37"/>
-			<target ref="id33"/>
+			<source ref="id36"/>
+			<target ref="id32"/>
 			<label kind="guard" x="-204" y="-204">errors &lt; errors_max</label>
 		</transition>
 		<transition>
-			<source ref="id34"/>
-			<target ref="id37"/>
-			<label kind="assignment" x="-221" y="-144">errors:=errors+1</label>
-		</transition>
-		<transition>
 			<source ref="id33"/>
-			<target ref="id34"/>
+			<target ref="id36"/>
+			<label kind="assignment" x="-221" y="-144">errors:=errors+1</label>
 		</transition>
 		<transition>
 			<source ref="id32"/>
 			<target ref="id33"/>
+		</transition>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id32"/>
 			<label kind="synchronisation" x="-323" y="-331">log_in?</label>
 			<label kind="assignment" x="-323" y="-314">errors=0</label>
 		</transition>
 	</template>
 	<template>
 		<name>Dispensing</name>
-		<location id="id38" x="-17" y="-144">
+		<location id="id37" x="-17" y="-144">
 			<name x="-27" y="-178">Standby</name>
 		</location>
-		<location id="id39" x="-17" y="42">
+		<location id="id38" x="-17" y="42">
 			<name x="-76" y="50">Dispense_Product</name>
 		</location>
-		<location id="id40" x="-161" y="-68">
+		<location id="id39" x="-161" y="-68">
 			<name x="-186" y="-59">Success</name>
 			<committed/>
 		</location>
-		<location id="id41" x="136" y="-51">
+		<location id="id40" x="136" y="-51">
 			<name x="119" y="-34">Error</name>
 			<committed/>
 		</location>
-		<location id="id42" x="-17" y="-42">
+		<location id="id41" x="-17" y="-42">
 			<committed/>
 		</location>
-		<init ref="id38"/>
-		<transition>
-			<source ref="id42"/>
-			<target ref="id39"/>
-			<label kind="synchronisation" x="-59" y="-25">update_stock!</label>
-		</transition>
-		<transition>
-			<source ref="id40"/>
-			<target ref="id38"/>
-			<label kind="synchronisation" x="-119" y="-136">restart!</label>
-		</transition>
+		<init ref="id37"/>
 		<transition>
 			<source ref="id41"/>
 			<target ref="id38"/>
-			<label kind="synchronisation" x="51" y="-119">refund!</label>
+			<label kind="synchronisation" x="-59" y="-25">update_stock!</label>
 		</transition>
 		<transition>
 			<source ref="id39"/>
-			<target ref="id41"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="-119" y="-136">restart!</label>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id37"/>
+			<label kind="synchronisation" x="51" y="-119">refund!</label>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id40"/>
 			<label kind="synchronisation" x="34" y="0">update_error?</label>
 			<label kind="assignment" x="25" y="17">message_shown = 5</label>
 		</transition>
 		<transition>
-			<source ref="id39"/>
-			<target ref="id40"/>
+			<source ref="id38"/>
+			<target ref="id39"/>
 			<label kind="synchronisation" x="-170" y="-8">updated_stock?</label>
 		</transition>
 		<transition>
-			<source ref="id38"/>
-			<target ref="id42"/>
+			<source ref="id37"/>
+			<target ref="id41"/>
 			<label kind="synchronisation" x="-42" y="-102">dispense?</label>
 		</transition>
 	</template>
@@ -594,17 +550,10 @@ int errors = 0;</declaration>
 			<comment></comment>
 		</query>
 		<query>
-			<formula>(Dispensing.Dispense_Product and selected_product == 1 and Inventory_Management.stock[1] == 10) --&gt; 
-((Dispensing.Success and Inventory_Management.stock[1] == 9) 
+			<formula>(Dispensing.Dispense_Product and Inventory_Management.stock[selected_product] == 10) --&gt; 
+((Dispensing.Success and Inventory_Management.stock[selected_product] == 9) 
 or 
-(Dispensing.Error and Inventory_Management.stock[1] == 10))</formula>
-			<comment></comment>
-		</query>
-		<query>
-			<formula>(Dispensing.Dispense_Product and selected_product == 2 and Inventory_Management.stock[2] == 10) --&gt; 
-((Dispensing.Success and Inventory_Management.stock[2] == 9) 
-or 
-(Dispensing.Error and Inventory_Management.stock[2] == 10))</formula>
+(Dispensing.Error and Inventory_Management.stock[selected_product] == 10))</formula>
 			<comment></comment>
 		</query>
 		<query>
@@ -648,11 +597,7 @@ or
 			<comment></comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; Dispensing.Success and selected_product == 1 and Inventory_Management.stock[1] &lt; 10</formula>
-			<comment></comment>
-		</query>
-		<query>
-			<formula>E&lt;&gt; Dispensing.Success and selected_product == 2 and Inventory_Management.stock[2] &lt; 10</formula>
+			<formula>E&lt;&gt; Dispensing.Success and Inventory_Management.stock[selected_product] &lt; 10</formula>
 			<comment></comment>
 		</query>
 		<query>
