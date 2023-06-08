@@ -178,6 +178,7 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id10"/>
+			<label kind="assignment" x="-127" y="-272">selected_product := 0</label>
 			<nail x="25" y="-246"/>
 		</transition>
 		<transition>
@@ -223,9 +224,9 @@ hybrid clock energy;</declaration>
 	</template>
 	<template>
 		<name>Inventory_Management</name>
-		<declaration>const int Quantity_max = 10;
-int coke_quantity = Quantity_max;
-int chips_quantity = Quantity_max;
+		<declaration>const int quantity_max = 10;
+
+int stock[3] = {0, 10, 10};
 
 clock timer;</declaration>
 		<location id="id16" x="-34" y="-8">
@@ -258,8 +259,8 @@ clock timer;</declaration>
 			<source ref="id22"/>
 			<target ref="id16"/>
 			<label kind="synchronisation" x="-212" y="-178">refill_done!</label>
-			<label kind="assignment" x="-212" y="-161">coke_quantity = Quantity_max,
-chips_quantity = Quantity_max</label>
+			<label kind="assignment" x="-212" y="-161">stock[1] = quantity_max,
+stock[2] = quantity_max</label>
 			<nail x="-42" y="-110"/>
 		</transition>
 		<transition>
@@ -298,13 +299,13 @@ chips_quantity = Quantity_max</label>
 			<source ref="id18"/>
 			<target ref="id20"/>
 			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &lt; 5</label>
-			<label kind="assignment" x="-212" y="42">coke_quantity -= 1</label>
+			<label kind="assignment" x="-212" y="42">stock[selected_product] -= 1</label>
 		</transition>
 		<transition>
 			<source ref="id17"/>
 			<target ref="id16"/>
 			<label kind="guard" x="59" y="-93">selected_product == 1 &amp;&amp;
-coke_quantity &gt; 0</label>
+stock[selected_product] &gt; 0</label>
 			<label kind="synchronisation" x="59" y="-59">available!</label>
 			<nail x="238" y="-34"/>
 			<nail x="59" y="-34"/>
@@ -313,7 +314,7 @@ coke_quantity &gt; 0</label>
 			<source ref="id17"/>
 			<target ref="id16"/>
 			<label kind="guard" x="59" y="-178">selected_product == 1 &amp;&amp;
-coke_quantity == 0</label>
+stock[selected_product] == 0</label>
 			<label kind="synchronisation" x="59" y="-144">unavailable!</label>
 			<label kind="assignment" x="59" y="-127">message_shown = 1</label>
 			<nail x="238" y="-102"/>
@@ -328,7 +329,7 @@ coke_quantity == 0</label>
 			<source ref="id18"/>
 			<target ref="id19"/>
 			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &lt; 5</label>
-			<label kind="assignment" x="-399" y="59">chips_quantity -= 1</label>
+			<label kind="assignment" x="-399" y="59">stock[selected_product] -= 1</label>
 			<nail x="-263" y="34"/>
 		</transition>
 		<transition>
@@ -341,7 +342,7 @@ coke_quantity == 0</label>
 			<source ref="id17"/>
 			<target ref="id16"/>
 			<label kind="guard" x="59" y="-246">selected_product == 2 &amp;&amp;
-chips_quantity &gt; 0</label>
+stock[selected_product] &gt; 0</label>
 			<label kind="synchronisation" x="59" y="-212">available!</label>
 			<nail x="238" y="-187"/>
 			<nail x="59" y="-187"/>
@@ -350,7 +351,7 @@ chips_quantity &gt; 0</label>
 			<source ref="id17"/>
 			<target ref="id16"/>
 			<label kind="guard" x="59" y="-331">selected_product == 2 &amp;&amp;
-chips_quantity == 0</label>
+stock[selected_product] == 0</label>
 			<label kind="synchronisation" x="59" y="-297">unavailable!</label>
 			<label kind="assignment" x="59" y="-280">message_shown = 1</label>
 			<nail x="238" y="-255"/>
@@ -465,7 +466,7 @@ chips_quantity == 0</label>
 	</template>
 	<template>
 		<name>User_Authentication</name>
-		<declaration>const int Max = 3;
+		<declaration>const int errors_max = 3;
 int errors = 0;</declaration>
 		<location id="id32" x="-263" y="-357">
 			<name x="-273" y="-391">Standby</name>
@@ -492,7 +493,7 @@ int errors = 0;</declaration>
 		<transition>
 			<source ref="id37"/>
 			<target ref="id36"/>
-			<label kind="guard" x="-59" y="-263">errors &gt;= Max</label>
+			<label kind="guard" x="-59" y="-263">errors &gt;= errors_max</label>
 			<label kind="assignment" x="-59" y="-246">message_shown = 3</label>
 		</transition>
 		<transition>
@@ -512,7 +513,7 @@ int errors = 0;</declaration>
 		<transition>
 			<source ref="id37"/>
 			<target ref="id33"/>
-			<label kind="guard" x="-204" y="-204">errors &lt; Max</label>
+			<label kind="guard" x="-204" y="-204">errors &lt; errors_max</label>
 		</transition>
 		<transition>
 			<source ref="id34"/>
@@ -593,17 +594,17 @@ int errors = 0;</declaration>
 			<comment></comment>
 		</query>
 		<query>
-			<formula>(Dispensing.Dispense_Product and selected_product == 1 and Inventory_Management.coke_quantity == 10) --&gt; 
-((Dispensing.Success and Inventory_Management.coke_quantity == 9) 
+			<formula>(Dispensing.Dispense_Product and selected_product == 1 and Inventory_Management.stock[1] == 10) --&gt; 
+((Dispensing.Success and Inventory_Management.stock[1] == 9) 
 or 
-(Dispensing.Error and Inventory_Management.coke_quantity == 10))</formula>
+(Dispensing.Error and Inventory_Management.stock[1] == 10))</formula>
 			<comment></comment>
 		</query>
 		<query>
-			<formula>(Dispensing.Dispense_Product and selected_product == 2 and Inventory_Management.chips_quantity == 10) --&gt; 
-((Dispensing.Success and Inventory_Management.chips_quantity == 9) 
+			<formula>(Dispensing.Dispense_Product and selected_product == 2 and Inventory_Management.stock[2] == 10) --&gt; 
+((Dispensing.Success and Inventory_Management.stock[2] == 9) 
 or 
-(Dispensing.Error and Inventory_Management.chips_quantity == 10))</formula>
+(Dispensing.Error and Inventory_Management.stock[2] == 10))</formula>
 			<comment></comment>
 		</query>
 		<query>
@@ -647,11 +648,11 @@ or
 			<comment></comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; Dispensing.Success and selected_product == 1 and Inventory_Management.coke_quantity &lt; 10</formula>
+			<formula>E&lt;&gt; Dispensing.Success and selected_product == 1 and Inventory_Management.stock[1] &lt; 10</formula>
 			<comment></comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; Dispensing.Success and selected_product == 2 and Inventory_Management.chips_quantity &lt; 10</formula>
+			<formula>E&lt;&gt; Dispensing.Success and selected_product == 2 and Inventory_Management.stock[2] &lt; 10</formula>
 			<comment></comment>
 		</query>
 		<query>
