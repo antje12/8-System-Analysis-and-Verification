@@ -1,0 +1,826 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>
+chan log_in, logged_in,
+dispense, refund, update_stock,
+account_payment_selected, card_payment_selected, 
+select_chips, product_selected, available, select_coke,
+update_error, updated_stock,
+refill, refill_done, card_payment_error;
+
+broadcast chan start_payment_process, restart, unavailable, failed;
+
+int [0,1] maintenance;
+
+int [0,2] selected_product;
+// 0 = Nothing
+// 1 = Coke
+// 2 = Chips
+
+int [0,5] message_shown;
+// 0 = "Select a product."
+// 1 = "Product not in stock."
+// 2 = "Card rejected."
+// 3 = "Login rejected."
+// 4 = "Refunding money."
+// 5 = "Product stuck."
+
+hybrid clock energy;</declaration>
+	<template>
+		<name>User</name>
+		<location id="id0" x="-25" y="-425">
+			<name x="-35" y="-459">Start</name>
+		</location>
+		<location id="id1" x="-102" y="-331">
+			<name x="-112" y="-365">Thirsty</name>
+		</location>
+		<location id="id2" x="43" y="-323">
+			<name x="33" y="-357">Hungry</name>
+		</location>
+		<location id="id3" x="-34" y="-221">
+			<name x="-178" y="-238">Awaiting_Payment</name>
+		</location>
+		<location id="id4" x="85" y="-221">
+			<committed/>
+		</location>
+		<location id="id5" x="306" y="-213">
+			<name x="314" y="-247">Awaiting_Response</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="170" y="-77">failed?</label>
+			<nail x="272" y="-77"/>
+			<nail x="136" y="-77"/>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="128" y="-119">card_payment_error?</label>
+			<nail x="255" y="-119"/>
+			<nail x="136" y="-119"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-178" y="-416">unavailable?</label>
+			<nail x="-187" y="-221"/>
+			<nail x="-187" y="-425"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="119" y="-196">card_payment_selected!</label>
+			<nail x="196" y="-196"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id5"/>
+			<label kind="synchronisation" x="102" y="-272">account_payment_selected!</label>
+			<nail x="196" y="-247"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-68" y="-213">start_payment_process?</label>
+		</transition>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="161" y="-425">restart?</label>
+			<nail x="306" y="-425"/>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="9" y="-306">maintenance == 0</label>
+			<label kind="synchronisation" x="8" y="-289">select_chips!</label>
+		</transition>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id3"/>
+			<label kind="guard" x="-161" y="-306">maintenance == 0</label>
+			<label kind="synchronisation" x="-153" y="-289">select_coke!</label>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id2"/>
+		</transition>
+		<transition>
+			<source ref="id0"/>
+			<target ref="id1"/>
+		</transition>
+	</template>
+	<template>
+		<name>Maintainer</name>
+		<location id="id6" x="-51" y="-127">
+			<name x="-61" y="-161">Standby</name>
+		</location>
+		<location id="id7" x="-51" y="-34">
+			<name x="-42" y="-68">Requested</name>
+		</location>
+		<location id="id8" x="-246" y="-34">
+			<committed/>
+		</location>
+		<location id="id9" x="-246" y="-127">
+			<name x="-280" y="-161">Filling</name>
+		</location>
+		<init ref="id6"/>
+		<transition>
+			<source ref="id9"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="-221" y="-170">refill_done?</label>
+			<label kind="assignment" x="-221" y="-153">maintenance := false</label>
+		</transition>
+		<transition>
+			<source ref="id8"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="-280" y="-93">refill!</label>
+		</transition>
+		<transition>
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="-212" y="-17">selected_product == 0</label>
+			<label kind="assignment" x="-212" y="-34">maintenance := true</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="-42" y="-110">unavailable?</label>
+		</transition>
+	</template>
+	<template>
+		<name>Item_Selection</name>
+		<location id="id10" x="-178" y="-246">
+			<name x="-188" y="-280">Selecting</name>
+		</location>
+		<location id="id11" x="-178" y="-34">
+			<name x="-153" y="-42">Select</name>
+			<committed/>
+		</location>
+		<location id="id12" x="-178" y="110">
+			<name x="-188" y="76">Check</name>
+		</location>
+		<location id="id13" x="-442" y="110">
+			<name x="-501" y="76">In_Stock</name>
+			<committed/>
+		</location>
+		<location id="id14" x="-442" y="-246">
+			<name x="-452" y="-280">Paying</name>
+		</location>
+		<location id="id15" x="25" y="110">
+			<name x="15" y="76">Not_In_Stock</name>
+			<committed/>
+		</location>
+		<init ref="id10"/>
+		<transition>
+			<source ref="id15"/>
+			<target ref="id10"/>
+			<nail x="25" y="-246"/>
+		</transition>
+		<transition>
+			<source ref="id14"/>
+			<target ref="id10"/>
+			<label kind="synchronisation" x="-357" y="-289">restart?</label>
+			<label kind="assignment" x="-391" y="-272">selected_product := 0</label>
+		</transition>
+		<transition>
+			<source ref="id13"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-433" y="-68">start_payment_process!</label>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="-340" y="85">available?</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-348" y="-161">select_coke?</label>
+			<label kind="assignment" x="-391" y="-144">selected_product := 1</label>
+			<nail x="-255" y="-136"/>
+		</transition>
+		<transition>
+			<source ref="id12"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-110" y="85">unavailable?</label>
+		</transition>
+		<transition>
+			<source ref="id11"/>
+			<target ref="id12"/>
+			<label kind="synchronisation" x="-170" y="8">product_selected!</label>
+		</transition>
+		<transition>
+			<source ref="id10"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-119" y="-161">select_chips?</label>
+			<label kind="assignment" x="-119" y="-128">selected_product := 2</label>
+			<nail x="-119" y="-136"/>
+		</transition>
+	</template>
+	<template>
+		<name>Inventory_Management</name>
+		<declaration>const int Quantity_max = 10;
+int coke_quantity = Quantity_max;
+int chips_quantity = Quantity_max;
+
+clock timer;</declaration>
+		<location id="id16" x="-34" y="-8">
+			<name x="-25" y="0">Standby</name>
+		</location>
+		<location id="id17" x="331" y="-8">
+			<name x="280" y="0">Checking</name>
+			<committed/>
+		</location>
+		<location id="id18" x="-212" y="-8">
+			<name x="-263" y="-42">Update_Stock</name>
+			<label kind="invariant" x="-289" y="-59">timer &lt;= 5 &amp;&amp; energy'==3</label>
+		</location>
+		<location id="id19" x="-263" y="85">
+			<committed/>
+		</location>
+		<location id="id20" x="-212" y="93">
+			<committed/>
+		</location>
+		<location id="id21" x="-450" y="-8">
+			<name x="-460" y="-42">Error</name>
+			<committed/>
+		</location>
+		<location id="id22" x="-221" y="-110">
+			<name x="-314" y="-136">Maintenance</name>
+			<committed/>
+		</location>
+		<init ref="id16"/>
+		<transition>
+			<source ref="id22"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-212" y="-178">refill_done!</label>
+			<label kind="assignment" x="-212" y="-161">coke_quantity = Quantity_max,
+chips_quantity = Quantity_max</label>
+			<nail x="-42" y="-110"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id22"/>
+			<label kind="synchronisation" x="-93" y="-93">refill?</label>
+			<nail x="-59" y="-93"/>
+		</transition>
+		<transition>
+			<source ref="id21"/>
+			<target ref="id16"/>
+			<nail x="-306" y="-68"/>
+			<nail x="-136" y="-68"/>
+		</transition>
+		<transition>
+			<source ref="id19"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-187" y="102">updated_stock!</label>
+			<nail x="-221" y="119"/>
+			<nail x="-51" y="119"/>
+		</transition>
+		<transition>
+			<source ref="id20"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-187" y="76">updated_stock!</label>
+			<nail x="-68" y="93"/>
+			<nail x="-68" y="93"/>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id21"/>
+			<label kind="guard" x="-357" y="-8">timer &gt;= 5</label>
+			<label kind="synchronisation" x="-365" y="-25">update_error!</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id20"/>
+			<label kind="guard" x="-314" y="25">selected_product == 1 &amp;&amp; timer &lt; 5</label>
+			<label kind="assignment" x="-212" y="42">coke_quantity -= 1</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="guard" x="59" y="-93">selected_product == 1 &amp;&amp;
+coke_quantity &gt; 0</label>
+			<label kind="synchronisation" x="59" y="-59">available!</label>
+			<nail x="238" y="-34"/>
+			<nail x="59" y="-34"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="guard" x="59" y="-178">selected_product == 1 &amp;&amp;
+coke_quantity == 0</label>
+			<label kind="synchronisation" x="59" y="-144">unavailable!</label>
+			<label kind="assignment" x="59" y="-127">message_shown = 1</label>
+			<nail x="238" y="-102"/>
+			<nail x="59" y="-102"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id17"/>
+			<label kind="synchronisation" x="102" y="0">product_selected?</label>
+		</transition>
+		<transition>
+			<source ref="id18"/>
+			<target ref="id19"/>
+			<label kind="guard" x="-501" y="42">selected_product == 2 &amp;&amp; timer &lt; 5</label>
+			<label kind="assignment" x="-399" y="59">chips_quantity -= 1</label>
+			<nail x="-263" y="34"/>
+		</transition>
+		<transition>
+			<source ref="id16"/>
+			<target ref="id18"/>
+			<label kind="synchronisation" x="-187" y="-25">update_stock?</label>
+			<label kind="assignment" x="-170" y="-8">timer:=0</label>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="guard" x="59" y="-246">selected_product == 2 &amp;&amp;
+chips_quantity &gt; 0</label>
+			<label kind="synchronisation" x="59" y="-212">available!</label>
+			<nail x="238" y="-187"/>
+			<nail x="59" y="-187"/>
+		</transition>
+		<transition>
+			<source ref="id17"/>
+			<target ref="id16"/>
+			<label kind="guard" x="59" y="-331">selected_product == 2 &amp;&amp;
+chips_quantity == 0</label>
+			<label kind="synchronisation" x="59" y="-297">unavailable!</label>
+			<label kind="assignment" x="59" y="-280">message_shown = 1</label>
+			<nail x="238" y="-255"/>
+			<nail x="51" y="-255"/>
+		</transition>
+	</template>
+	<template>
+		<name>Payment_Processing</name>
+		<location id="id23" x="161" y="-314">
+			<name x="178" y="-348">Start</name>
+		</location>
+		<location id="id24" x="314" y="-314">
+			<name x="331" y="-323">Card_Error</name>
+			<committed/>
+		</location>
+		<location id="id25" x="-68" y="-399">
+			<name x="-195" y="-408">Account_Payment</name>
+		</location>
+		<location id="id26" x="314" y="-204">
+			<name x="331" y="-212">Card_Payment</name>
+			<committed/>
+		</location>
+		<location id="id27" x="-68" y="-42">
+			<name x="-93" y="-25">Ready</name>
+		</location>
+		<location id="id28" x="467" y="-42">
+			<name x="492" y="-50">Refund</name>
+			<committed/>
+		</location>
+		<location id="id29" x="-68" y="-313">
+			<name x="-161" y="-322">Logging_In</name>
+		</location>
+		<location id="id30" x="161" y="-459">
+			<name x="136" y="-493">Standby</name>
+		</location>
+		<location id="id31" x="-68" y="-177">
+			<committed/>
+		</location>
+		<init ref="id30"/>
+		<transition>
+			<source ref="id31"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="-136" y="-126">dispense!</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id31"/>
+			<label kind="synchronisation" x="-144" y="-262">logged_in?</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id30"/>
+			<label kind="synchronisation" x="-178" y="-68">restart?</label>
+			<nail x="-204" y="-42"/>
+			<nail x="-204" y="-458"/>
+		</transition>
+		<transition>
+			<source ref="id24"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="229" y="-348">card_payment_error!</label>
+		</transition>
+		<transition>
+			<source ref="id29"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="9" y="-305">failed?</label>
+		</transition>
+		<transition>
+			<source ref="id30"/>
+			<target ref="id23"/>
+			<label kind="synchronisation" x="161" y="-416">start_payment_process?</label>
+		</transition>
+		<transition>
+			<source ref="id28"/>
+			<target ref="id30"/>
+			<label kind="synchronisation" x="382" y="-459">restart!</label>
+			<nail x="467" y="-458"/>
+			<nail x="254" y="-459"/>
+		</transition>
+		<transition>
+			<source ref="id25"/>
+			<target ref="id29"/>
+			<label kind="synchronisation" x="-119" y="-364">log_in!</label>
+		</transition>
+		<transition>
+			<source ref="id27"/>
+			<target ref="id28"/>
+			<label kind="synchronisation" x="238" y="-85">refund?</label>
+			<label kind="assignment" x="221" y="-68">message_shown = 4</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id27"/>
+			<label kind="synchronisation" x="18" y="-203">dispense!</label>
+			<nail x="-42" y="-203"/>
+			<nail x="-42" y="-84"/>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id25"/>
+			<label kind="synchronisation" x="-51" y="-416">account_payment_selected?</label>
+		</transition>
+		<transition>
+			<source ref="id26"/>
+			<target ref="id24"/>
+			<label kind="assignment" x="323" y="-272">message_shown = 2</label>
+		</transition>
+		<transition>
+			<source ref="id23"/>
+			<target ref="id26"/>
+			<label kind="synchronisation" x="93" y="-255">card_payment_selected?</label>
+		</transition>
+	</template>
+	<template>
+		<name>User_Authentication</name>
+		<declaration>const int Max = 3;
+int errors = 0;</declaration>
+		<location id="id32" x="-263" y="-357">
+			<name x="-273" y="-391">Standby</name>
+		</location>
+		<location id="id33" x="-263" y="-246">
+			<name x="-323" y="-263">Log_In</name>
+		</location>
+		<location id="id34" x="-263" y="-144">
+			<name x="-273" y="-178">Reject</name>
+			<committed/>
+		</location>
+		<location id="id35" x="-119" y="-246">
+			<name x="-129" y="-280">Accept</name>
+			<committed/>
+		</location>
+		<location id="id36" x="-68" y="-357">
+			<name x="-78" y="-391">Error</name>
+			<committed/>
+		</location>
+		<location id="id37" x="-68" y="-144">
+			<name x="-78" y="-178">Retry</name>
+		</location>
+		<init ref="id32"/>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id36"/>
+			<label kind="guard" x="-59" y="-263">errors &gt;= Max</label>
+			<label kind="assignment" x="-59" y="-246">message_shown = 3</label>
+		</transition>
+		<transition>
+			<source ref="id36"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-187" y="-382">failed!</label>
+		</transition>
+		<transition>
+			<source ref="id35"/>
+			<target ref="id32"/>
+			<label kind="synchronisation" x="-212" y="-314">logged_in!</label>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id35"/>
+		</transition>
+		<transition>
+			<source ref="id37"/>
+			<target ref="id33"/>
+			<label kind="guard" x="-204" y="-204">errors &lt; Max</label>
+		</transition>
+		<transition>
+			<source ref="id34"/>
+			<target ref="id37"/>
+			<label kind="assignment" x="-221" y="-144">errors:=errors+1</label>
+		</transition>
+		<transition>
+			<source ref="id33"/>
+			<target ref="id34"/>
+		</transition>
+		<transition>
+			<source ref="id32"/>
+			<target ref="id33"/>
+			<label kind="synchronisation" x="-323" y="-331">log_in?</label>
+			<label kind="assignment" x="-323" y="-314">errors=0</label>
+		</transition>
+	</template>
+	<template>
+		<name>Dispensing</name>
+		<location id="id38" x="-17" y="-144">
+			<name x="-27" y="-178">Standby</name>
+		</location>
+		<location id="id39" x="-17" y="42">
+			<name x="-76" y="50">Dispense_Product</name>
+		</location>
+		<location id="id40" x="-161" y="-68">
+			<name x="-186" y="-59">Success</name>
+			<committed/>
+		</location>
+		<location id="id41" x="136" y="-51">
+			<name x="119" y="-34">Error</name>
+			<committed/>
+		</location>
+		<location id="id42" x="-17" y="-42">
+			<committed/>
+		</location>
+		<init ref="id38"/>
+		<transition>
+			<source ref="id42"/>
+			<target ref="id39"/>
+			<label kind="synchronisation" x="-59" y="-25">update_stock!</label>
+		</transition>
+		<transition>
+			<source ref="id40"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="-119" y="-136">restart!</label>
+		</transition>
+		<transition>
+			<source ref="id41"/>
+			<target ref="id38"/>
+			<label kind="synchronisation" x="51" y="-119">refund!</label>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id41"/>
+			<label kind="synchronisation" x="34" y="0">update_error?</label>
+			<label kind="assignment" x="25" y="17">message_shown = 5</label>
+		</transition>
+		<transition>
+			<source ref="id39"/>
+			<target ref="id40"/>
+			<label kind="synchronisation" x="-170" y="-8">updated_stock?</label>
+		</transition>
+		<transition>
+			<source ref="id38"/>
+			<target ref="id42"/>
+			<label kind="synchronisation" x="-42" y="-102">dispense?</label>
+		</transition>
+	</template>
+	<system>system Item_Selection, Inventory_Management, Payment_Processing, Dispensing, User_Authentication, User, Maintainer;</system>
+	<queries>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>(Dispensing.Dispense_Product and selected_product == 1 and Inventory_Management.coke_quantity == 10) --&gt; 
+((Dispensing.Success and Inventory_Management.coke_quantity == 9) 
+or 
+(Dispensing.Error and Inventory_Management.coke_quantity == 10))</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>(Dispensing.Dispense_Product and selected_product == 2 and Inventory_Management.chips_quantity == 10) --&gt; 
+((Dispensing.Success and Inventory_Management.chips_quantity == 9) 
+or 
+(Dispensing.Error and Inventory_Management.chips_quantity == 10))</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Select and selected_product == 1</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Select and selected_product == 2</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Select and selected_product != 0</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>Item_Selection.Select --&gt; (Item_Selection.In_Stock or Item_Selection.Not_In_Stock)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] (!Maintainer.Standby and !Maintainer.Requested) imply (User.Start or User.Thirsty or User.Hungry)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] (!User.Start and !User.Thirsty and !User.Hungry) imply (Maintainer.Standby or Maintainer.Requested)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Success and selected_product == 1 and Inventory_Management.coke_quantity &lt; 10</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Success and selected_product == 2 and Inventory_Management.chips_quantity &lt; 10</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] User_Authentication.errors &lt; 4</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (Dispensing.Success and (Inventory_Management.timer &lt;= 5))</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>A[] not (Dispensing.Success and Inventory_Management.timer &gt; 5)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Start</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Thirsty</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Hungry</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Awaiting_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User.Awaiting_Response</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Requested</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Maintainer.Filling</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Selecting</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Select</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Check</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.In_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Paying</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Item_Selection.Not_In_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Checking</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Update_Stock</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Inventory_Management.Maintenance</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Start</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Card_Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Account_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Card_Payment</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Ready</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Refund</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Logging_In</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Payment_Processing.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Log_In</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Reject</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Accept</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Error</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; User_Authentication.Retry</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Standby</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Dispense_Product</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Success</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E&lt;&gt; Dispensing.Error</formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
