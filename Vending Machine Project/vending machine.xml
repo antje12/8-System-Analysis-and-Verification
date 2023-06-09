@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
-	<declaration>
-chan log_in, logged_in,
-dispense, refund, update_stock,
-account_payment_selected, card_payment_selected, 
-product_selected, available,
-update_error, updated_stock,
-refill, refill_done, card_payment_error,
-select_product[3];
+	<declaration>chan 
+select_product[3], product_selected, available, 
+account_payment_selected, card_payment_selected, card_payment_error, 
+refill, refill_done, 
+log_in, logged_in, 
+update_stock, updated_stock, update_error, 
+dispense, refund;
 
-broadcast chan start_payment_process, restart, unavailable, failed;
+broadcast chan 
+start_payment_process, unavailable, failed, restart;
 
 int [0,1] maintenance;
 
-int [0,2] selected_product;
+const int N = 2;    // # products
+int stock[N+1] = {0, 10, 10};
+int [0,N] selected_product;
 // 0 = Nothing
 // 1 = Coke
 // 2 = Chips
@@ -201,7 +203,7 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id10"/>
 			<target ref="id11"/>
-			<label kind="select" x="-246" y="-187">e : int[0,2]</label>
+			<label kind="select" x="-246" y="-187">e : int[0,N]</label>
 			<label kind="synchronisation" x="-246" y="-171">select_product[e]?</label>
 			<label kind="assignment" x="-246" y="-153">selected_product := e</label>
 		</transition>
@@ -219,9 +221,6 @@ hybrid clock energy;</declaration>
 	<template>
 		<name>Inventory_Management</name>
 		<declaration>const int quantity_max = 10;
-
-int stock[3] = {0, 10, 10};
-
 clock timer;</declaration>
 		<location id="id16" x="-34" y="-8">
 			<name x="-25" y="0">Standby</name>
@@ -539,7 +538,14 @@ int errors = 0;</declaration>
 			<label kind="synchronisation" x="-42" y="-102">dispense?</label>
 		</transition>
 	</template>
-	<system>system Item_Selection, Inventory_Management, Payment_Processing, Dispensing, User_Authentication, User, Maintainer;</system>
+	<system>system 
+User, 
+Maintainer, 
+Item_Selection, 
+Inventory_Management, 
+Payment_Processing, 
+User_Authentication, 
+Dispensing;</system>
 	<queries>
 		<query>
 			<formula>A[] not deadlock</formula>
