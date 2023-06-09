@@ -1,8 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
 <nta>
-	<declaration>chan 
-select_product[3], product_selected, available, 
+	<declaration>const int N = 5;            // Number of products
+const int stock_max = 10;   // Max stock pr. product
+int stock[N+1] = {0, stock_max, stock_max, stock_max, stock_max, stock_max};
+int [0,N] selected_product; // Currently selected product
+// 0 = Nothing
+// 1 = Coke
+// 2 = Chips
+// 3 = Fanta
+// 4 = Cookies
+// 5 = Ice cream
+
+chan 
+select_product[N+1], product_selected, available, 
 account_payment_selected, card_payment_selected, card_payment_error, 
 refill, refill_done, 
 log_in, logged_in, 
@@ -13,15 +24,6 @@ broadcast chan
 start_payment_process, unavailable, failed, restart;
 
 int [0,1] maintenance;
-
-const int quantity_max = 10;
-
-const int N = 2;    // # products
-int stock[N+1] = {0, quantity_max, quantity_max};
-int [0,N] selected_product;
-// 0 = Nothing
-// 1 = Coke
-// 2 = Chips
 
 int [0,5] message_shown;
 // 0 = "Select a product."
@@ -228,7 +230,7 @@ void restock()
 {
     for (i : int[1,N]) 
     {
-        stock[i] = quantity_max;
+        stock[i] = stock_max;
     }
 }
 </declaration>
