@@ -14,8 +14,10 @@ start_payment_process, unavailable, failed, restart;
 
 int [0,1] maintenance;
 
+const int quantity_max = 10;
+
 const int N = 2;    // # products
-int stock[N+1] = {0, 10, 10};
+int stock[N+1] = {0, quantity_max, quantity_max};
 int [0,N] selected_product;
 // 0 = Nothing
 // 1 = Coke
@@ -81,7 +83,7 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id4"/>
 			<target ref="id5"/>
-			<label kind="synchronisation" x="102" y="-272">account_payment_selected!</label>
+			<label kind="synchronisation" x="110" y="-263">account_payment_selected!</label>
 			<nail x="196" y="-247"/>
 		</transition>
 		<transition>
@@ -98,13 +100,13 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id2"/>
 			<target ref="id3"/>
-			<label kind="guard" x="9" y="-306">maintenance == 0</label>
+			<label kind="guard" x="0" y="-306">maintenance == 0</label>
 			<label kind="synchronisation" x="0" y="-289">select_product[2]!</label>
 		</transition>
 		<transition>
 			<source ref="id1"/>
 			<target ref="id3"/>
-			<label kind="guard" x="-161" y="-306">maintenance == 0</label>
+			<label kind="guard" x="-153" y="-306">maintenance == 0</label>
 			<label kind="synchronisation" x="-153" y="-289">select_product[1]!</label>
 		</transition>
 		<transition>
@@ -159,29 +161,29 @@ hybrid clock energy;</declaration>
 		<location id="id10" x="-178" y="-246">
 			<name x="-188" y="-280">Selecting</name>
 		</location>
-		<location id="id11" x="-178" y="-34">
-			<name x="-153" y="-42">Select</name>
+		<location id="id11" x="-178" y="-93">
+			<name x="-153" y="-101">Select</name>
 			<committed/>
 		</location>
-		<location id="id12" x="-178" y="110">
-			<name x="-188" y="76">Check</name>
+		<location id="id12" x="-178" y="8">
+			<name x="-195" y="17">Check</name>
 		</location>
-		<location id="id13" x="-442" y="110">
-			<name x="-501" y="76">In_Stock</name>
+		<location id="id13" x="-442" y="8">
+			<name x="-459" y="17">In_Stock</name>
 			<committed/>
 		</location>
 		<location id="id14" x="-442" y="-246">
 			<name x="-452" y="-280">Paying</name>
 		</location>
-		<location id="id15" x="25" y="110">
-			<name x="15" y="76">Not_In_Stock</name>
+		<location id="id15" x="25" y="8">
+			<name x="-42" y="17">Not_In_Stock</name>
 			<committed/>
 		</location>
 		<init ref="id10"/>
 		<transition>
 			<source ref="id15"/>
 			<target ref="id10"/>
-			<label kind="assignment" x="-127" y="-272">selected_product := 0</label>
+			<label kind="assignment" x="-102" y="-272">selected_product := 0</label>
 			<nail x="25" y="-246"/>
 		</transition>
 		<transition>
@@ -193,12 +195,12 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id13"/>
 			<target ref="id14"/>
-			<label kind="synchronisation" x="-433" y="-68">start_payment_process!</label>
+			<label kind="synchronisation" x="-442" y="-127">start_payment_process!</label>
 		</transition>
 		<transition>
 			<source ref="id12"/>
 			<target ref="id13"/>
-			<label kind="synchronisation" x="-340" y="85">available?</label>
+			<label kind="synchronisation" x="-340" y="-17">available?</label>
 		</transition>
 		<transition>
 			<source ref="id10"/>
@@ -210,18 +212,26 @@ hybrid clock energy;</declaration>
 		<transition>
 			<source ref="id12"/>
 			<target ref="id15"/>
-			<label kind="synchronisation" x="-110" y="85">unavailable?</label>
+			<label kind="synchronisation" x="-110" y="-17">unavailable?</label>
 		</transition>
 		<transition>
 			<source ref="id11"/>
 			<target ref="id12"/>
-			<label kind="synchronisation" x="-170" y="8">product_selected!</label>
+			<label kind="synchronisation" x="-170" y="-68">product_selected!</label>
 		</transition>
 	</template>
 	<template>
 		<name>Inventory_Management</name>
-		<declaration>const int quantity_max = 10;
-clock timer;</declaration>
+		<declaration>clock timer;
+
+void restock()
+{
+    for (i : int[1,N]) 
+    {
+        stock[i] = quantity_max;
+    }
+}
+</declaration>
 		<location id="id16" x="-34" y="-8">
 			<name x="-25" y="0">Standby</name>
 		</location>
@@ -236,28 +246,27 @@ clock timer;</declaration>
 		<location id="id19" x="-212" y="93">
 			<committed/>
 		</location>
-		<location id="id20" x="-450" y="-8">
-			<name x="-460" y="-42">Error</name>
+		<location id="id20" x="-399" y="-8">
+			<name x="-409" y="-42">Error</name>
 			<committed/>
 		</location>
-		<location id="id21" x="-221" y="-110">
-			<name x="-314" y="-136">Maintenance</name>
+		<location id="id21" x="-85" y="-153">
+			<name x="-187" y="-161">Maintenance</name>
 			<committed/>
 		</location>
 		<init ref="id16"/>
 		<transition>
 			<source ref="id21"/>
 			<target ref="id16"/>
-			<label kind="synchronisation" x="-212" y="-178">refill_done!</label>
-			<label kind="assignment" x="-212" y="-161">stock[1] = quantity_max,
-stock[2] = quantity_max</label>
+			<label kind="synchronisation" x="-51" y="-161">refill_done!</label>
+			<label kind="assignment" x="-51" y="-144">restock()</label>
 			<nail x="-42" y="-110"/>
 		</transition>
 		<transition>
 			<source ref="id16"/>
 			<target ref="id21"/>
-			<label kind="synchronisation" x="-93" y="-93">refill?</label>
-			<nail x="-59" y="-93"/>
+			<label kind="synchronisation" x="-127" y="-119">refill?</label>
+			<nail x="-85" y="-93"/>
 		</transition>
 		<transition>
 			<source ref="id20"/>
@@ -281,8 +290,8 @@ stock[2] = quantity_max</label>
 		<transition>
 			<source ref="id18"/>
 			<target ref="id19"/>
-			<label kind="guard" x="-289" y="25">timer &lt; 5</label>
-			<label kind="assignment" x="-289" y="42">stock[selected_product] -= 1</label>
+			<label kind="guard" x="-246" y="25">timer &lt; 5</label>
+			<label kind="assignment" x="-306" y="42">stock[selected_product] -= 1</label>
 		</transition>
 		<transition>
 			<source ref="id17"/>
