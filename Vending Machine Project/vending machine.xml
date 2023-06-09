@@ -567,10 +567,10 @@ Dispensing;</system>
 			<comment></comment>
 		</query>
 		<query>
-			<formula>(Dispensing.Dispense_Product and Inventory_Management.stock[selected_product] == 10) --&gt; 
-((Dispensing.Success and Inventory_Management.stock[selected_product] == 9) 
+			<formula>(Dispensing.Dispense_Product and stock[selected_product] == 10) --&gt; 
+((Dispensing.Success and stock[selected_product] == 9) 
 or 
-(Dispensing.Error and Inventory_Management.stock[selected_product] == 10))</formula>
+(Dispensing.Error and stock[selected_product] == 10))</formula>
 			<comment></comment>
 		</query>
 		<query>
@@ -614,7 +614,7 @@ or
 			<comment></comment>
 		</query>
 		<query>
-			<formula>E&lt;&gt; Dispensing.Success and Inventory_Management.stock[selected_product] &lt; 10</formula>
+			<formula>E&lt;&gt; Dispensing.Success and stock[selected_product] &lt; 10</formula>
 			<comment></comment>
 		</query>
 		<query>
