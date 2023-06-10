@@ -223,7 +223,7 @@ hybrid clock energy;</declaration>
 	<template>
 		<name>Inventory_Management</name>
 		<declaration>const int stock_max = 10;   // Max stock pr. product
-int stock[N+1] = {0, stock_max, stock_max, stock_max, stock_max, stock_max};
+int stock[N+1];
 
 void restock()
 {
